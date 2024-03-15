@@ -7,6 +7,7 @@ import BoxModel from './components/BoxModel';
 import BoxShadow from './components/BoxShadow';
 import StylesInheritence from './components/StylesInheritence';
 import FlexLayout from './components/FlexLayout';
+import RelativeAndAbsoluteLayout from './components/RelativeAndAbsoluteLayout';
 const logoImgSrc = require("./assets/adaptive-icon.png")
 
 export default function App() {
@@ -54,6 +55,7 @@ export default function App() {
         <BoxShadow />
         <StylesInheritence />
         <FlexLayout />
+        <RelativeAndAbsoluteLayout />
 
         <Modal
           visible={show}
