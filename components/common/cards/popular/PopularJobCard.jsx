@@ -5,11 +5,11 @@ import styles from './popularjobcard.style'
 import { checkImageURL } from '../../../../utils'
 
 const PopularJobCard = ({ item, selectedJob, handleCardPress }) => {
-  console.log(checkImageURL(item.employer_logo), "?!", item?.employer_name)
+  // console.log(checkImageURL(item.employer_logo), "?!", item?.employer_name)
   return (
     <TouchableOpacity
       style={styles.container(selectedJob, item)}
-      onPress={handleCardPress}
+      onPress={() => handleCardPress(item)}
     >
       <TouchableOpacity style={styles.logoContainer(selectedJob, item)}>
         <Image

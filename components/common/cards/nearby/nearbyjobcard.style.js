@@ -22,8 +22,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  logImage: {
-    width: "70%",
+  logoImage: {
+    width: "80%",
     height: "70%",
   },
   textContainer: {
