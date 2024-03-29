@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
+import React, { memo } from 'react'
 import { Marker } from 'react-native-maps'
 import { defaultStyles } from '@/constants/Styles'
 import { ListingGeo } from '@/interfaces/listing-geo'
@@ -13,7 +13,7 @@ const Initial_Region = {
     longitudeDelta: 9
 }
 
-const ListingsMaps = ({ data }: { data: any }) => {
+const ListingsMaps = memo(({ data }: { data: any }) => {
     const router = useRouter()
     // console.log(data?.features?.length)
 
@@ -80,7 +80,7 @@ const ListingsMaps = ({ data }: { data: any }) => {
             </MapView>
         </View>
     )
-}
+})
 
 const styles = StyleSheet.create({
     container: {

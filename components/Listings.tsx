@@ -5,18 +5,28 @@ import { Link } from 'expo-router'
 import { Listing } from '@/interfaces/listing'
 import { Ionicons } from '@expo/vector-icons'
 import Animated, { FadeInRight, FadeOutLeft } from 'react-native-reanimated'
+import { BottomSheetFlatList, BottomSheetFlatListMethods } from '@gorhom/bottom-sheet'
 
 interface Props {
     data: any[],
-    category: string
+    category: string,
+    refresh: number
 }
 
-const Listings = ({ category, data }: Props) => {
+const Listings = ({ category, data, refresh }: Props) => {
     // to mimic data fetching from server bit, we will manually induce some loading time
     const [loading, setLoading] = useState(false)
 
     // keeping track of listings scrolled too
-    const listRef = useRef<FlatList>(null)
+    // const listRef = useRef<FlatList>(null)
+    const listRef = useRef<BottomSheetFlatListMethods>(null)
+
+    useEffect(() => {
+        // console.log("refresh listings")
+        if (refresh) {
+            listRef.current?.scrollToOffset({ offset: 0, animated: true })
+        }
+    }, [refresh])
 
     useEffect(() => {
         console.log("reload data", data.length)
@@ -70,14 +80,21 @@ const Listings = ({ category, data }: Props) => {
 
     return (
         <View style={defaultStyles.container}>
-            <FlatList
+            <BottomSheetFlatList
+                ref={listRef}
+                data={loading ? [] : data}
+                renderItem={renderRow}
+                ListHeaderComponent={<Text style={styles.info}>{data?.length} Homes</Text>}
+            />
+            {/* <FlatList
                 ref={listRef}
                 data={loading ? [] : data}
                 renderItem={renderRow}
             // renderItem={(({ item }) => (
             //     <Text>{item.name}</Text>
             // ))}
-            />
+            ListHeaderComponent={<Text style={styles.info}>{data?.length} Homes</Text>}
+            /> */}
         </View>
     )
 }
@@ -92,6 +109,12 @@ const styles = StyleSheet.create({
         width: "100%",
         height: 301,
         borderRadius: 11
+    },
+    info: {
+        textAlign: "center",
+        fontFamily: "mont-sb",
+        fontSize: 15,
+        marginTop: 4
     }
 });
 

@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import { TouchableOpacity } from 'react-native';
 import * as SecureStore from "expo-secure-store"
 import { useAuth, ClerkProvider } from "@clerk/clerk-expo"
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Clerk_Publishable_Key = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY
 
@@ -83,31 +84,12 @@ function RootLayoutNav() {
   }, [isLoaded])
 
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name='(modals)/login' options={{
-        presentation: "modal", title: "Log in or Sign up",
-        headerTitleStyle: { fontFamily: "mont-sb" },
-        headerLeft: () => {
-          return (
-            <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name='close-outline' size={20} />
-            </TouchableOpacity>
-          )
-        }
-      }} />
-      <Stack.Screen
-        name='listing/[id]'
-        options={{
-          headerTitle: "",
-          headerTransparent: true
-        }}
-      />
-      <Stack.Screen
-        name='(modals)/bookings'
-        options={{
-          presentation: "transparentModal",
-          animation: "fade",
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name='(modals)/login' options={{
+          presentation: "modal", title: "Log in or Sign up",
+          headerTitleStyle: { fontFamily: "mont-sb" },
           headerLeft: () => {
             return (
               <TouchableOpacity onPress={() => router.back()}>
@@ -115,8 +97,29 @@ function RootLayoutNav() {
               </TouchableOpacity>
             )
           }
-        }}
-      />
-    </Stack>
+        }} />
+        <Stack.Screen
+          name='listing/[id]'
+          options={{
+            headerTitle: "",
+            headerTransparent: true
+          }}
+        />
+        <Stack.Screen
+          name='(modals)/bookings'
+          options={{
+            presentation: "transparentModal",
+            animation: "fade",
+            headerLeft: () => {
+              return (
+                <TouchableOpacity onPress={() => router.back()}>
+                  <Ionicons name='close-outline' size={20} />
+                </TouchableOpacity>
+              )
+            }
+          }}
+        />
+      </Stack>
+    </GestureHandlerRootView>
   );
 }

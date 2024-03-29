@@ -6,6 +6,7 @@ import Listings from '@/components/Listings'
 import listingsData from "@/assets/data/airbnb-listings.json"
 import ListingsMaps from '@/components/ListingsMaps'
 import listingsGoeData from "@/assets/data/airbnb-listings.geo.json"
+import ListingsBottomSheet from '@/components/ListingsBottomSheet'
 
 const IndexPage = () => {
   const [category, setCategory] = useState("Tiny homes")
@@ -19,7 +20,7 @@ const IndexPage = () => {
     setCategory(name)
   }
   return (
-    <View style={{flex: 1, marginTop: 159}}>
+    <View style={{flex: 1, marginTop: 101}}>
 
       <Stack.Screen 
         options={{
@@ -32,6 +33,9 @@ const IndexPage = () => {
 
       {/* for listings maps page */}
       <ListingsMaps data={itemsGeo} />
+
+      {/* with bottom sheet view */}
+      <ListingsBottomSheet category={category} data={items} />
 
 
       {/* <Link href={"/(modals)/login"}>
