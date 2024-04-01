@@ -1,10 +1,11 @@
-import { View, Text, Button, StyleSheet, SafeAreaView, TouchableOpacity, Image } from 'react-native'
+import { View, Text, Button, StyleSheet, SafeAreaView, TouchableOpacity, Image, TextInput } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useAuth, useUser } from '@clerk/clerk-react'
 import { Link } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import { defaultStyles } from '@/constants/Styles'
 import Colors from '@/constants/Colors'
+import * as ImagePicker from "expo-image-picker"
 
 const ProfilePage = () => {
   const { signOut, isSignedIn } = useAuth()
@@ -21,9 +22,32 @@ const ProfilePage = () => {
     setEmail(user.emailAddresses[0].emailAddress)
   }, [user])
 
-  const onSaveUser = async () => { }
+  const onSaveUser = async () => {
+    try {
+      if(!firstName || !lastName) return
+      await user?.update({firstName, lastName})
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setEdit(false)
+    }
+  }
 
-  const onCaptureImage = async () => { }
+  const onCaptureImage = async () => { 
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: .85,
+      base64: true
+    })
+
+    if(!result.canceled) {
+      const base64 = `data:image/png;base64,${result.assets[0].base64}`
+      user?.setProfileImage({
+        file: base64
+      })
+    }
+   }
 
   return (
     <SafeAreaView style={defaultStyles.container}>
@@ -44,7 +68,28 @@ const ProfilePage = () => {
           <View style={{ flexDirection: "row", gap: 6 }}>
             {
               edit
-                ? <Text>Edit</Text>
+                ? (
+                  <View style={styles.editRow}>
+                    <TextInput
+                      placeholder='First Name'
+                      value={firstName || ""}
+                      onChangeText={setFirstName}
+                      style={[defaultStyles.inputField, { paddingHorizontal: 10 }]}
+                    />
+
+                    <TextInput
+                      placeholder='Last Name'
+                      value={lastName || ""}
+                      onChangeText={setLastName}
+                      style={[defaultStyles.inputField, { paddingHorizontal: 10 }]}
+                    />
+
+                    <TouchableOpacity onPress={onSaveUser}>
+                      <Ionicons name='checkmark-outline' size={24} color={Colors.dark} />
+                    </TouchableOpacity>
+
+                  </View>
+                )
                 : (
                   <View style={styles.editRow}>
                     <Text style={{ fontFamily: "mont-sb", fontSize: 22 }}>{firstName} {lastName}</Text>
@@ -118,7 +163,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    gap: 8
+    gap: 8,
+    height: 47
   }
 });
 
