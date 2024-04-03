@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, TextInput, ScrollView, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
-// import { AnimatedTouchableOpacity } from '@/app/(modals)/bookings'
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons'
 import Colors from '@/constants/Colors'
@@ -59,44 +58,6 @@ const WhereTo = ({ openCard, setOpenCard, selectedPlace, setSelectedPlace }: { o
 }
 
 const styles = StyleSheet.create({
-    // card: {
-    //     backgroundColor: '#fff',
-    //     borderRadius: 14,
-    //     margin: 10,
-    //     elevation: 4,
-    //     shadowColor: '#000',
-    //     shadowOpacity: 0.3,
-    //     shadowRadius: 4,
-    //     shadowOffset: {
-    //         width: 2,
-    //         height: 2,
-    //     },
-    //     gap: 20,
-    // },
-    // previewText: {
-    //     fontFamily: "mont-sb",
-    //     fontSize: 15,
-    //     color: Colors.grey
-    // },
-    // previewDate: {
-    //     fontFamily: "mont-sb",
-    //     fontSize: 15,
-    //     color: Colors.dark
-    // },
-    // previewCard: {
-    //     flexDirection: "row",
-    //     justifyContent: "space-between",
-    //     padding: 20
-    // },
-    // cardHeader: {
-    //     fontFamily: "mont-b",
-    //     fontSize: 24,
-    //     padding: 20
-    // },
-    // cardBody: {
-    //     paddingHorizontal: 20,
-    //     // paddingBottom: 20
-    // },
     searchSection: {
         height: 49,
         flexDirection: "row",
@@ -128,7 +89,15 @@ const styles = StyleSheet.create({
         height: 120,
         borderRadius: 11
     },
-    scrollContainer: { gap: 22, paddingLeft: 20, marginBottom: 31 },
+    scrollContainer: {
+         gap: 22, 
+         paddingLeft: 20, 
+         marginBottom: 31 
+    },
+    // text2: (selected:number, idx:number) => ({
+    //     paddingTop: 6,
+    //     fontFamily: selected === idx ? "mont-sb" : "mont-r"
+    // })
 });
 
 export default WhereTo

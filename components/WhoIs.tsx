@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
-// import { AnimatedTouchableOpacity } from '@/app/(modals)/bookings';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { modalDefaultStyles } from '@/constants/Styles';
 import Colors from '@/constants/Colors';
@@ -13,9 +12,8 @@ type GroupItemProps = {
     count: number;
 }
 
-// const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity)
-
 const WhoIs = ({ openCard, setOpenCard, groups, setGroups }: { openCard: number, setOpenCard: React.Dispatch<React.SetStateAction<number>>, groups: GroupItemProps[], setGroups: any }) => {
+
     return (
         <View style={modalDefaultStyles.card}>
             {
