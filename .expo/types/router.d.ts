@@ -9,9 +9,9 @@ declare module "expo-router" {
   // prettier-ignore
   type StaticRoutes = `/` | `/(drawer)/favourites/` | `/favourites/` | `/(drawer)/favourites` | `/(drawer)/home/ ` | `/home/ `;
   // prettier-ignore
-  type DynamicRoutes<T extends string> = `/(drawer)/home/movie/${SingleRoutePart<T>}` | `/home/movie/${SingleRoutePart<T>}` | `/(drawer)/home/tv/${SingleRoutePart<T>}` | `/home/tv/${SingleRoutePart<T>}`;
+  type DynamicRoutes<T extends string> = `/(drawer)/home/movie/${SingleRoutePart<T>}` | `/home/movie/${SingleRoutePart<T>}` | `/(drawer)/home/tv/${SingleRoutePart<T>}` | `/home/tv/${SingleRoutePart<T>}` | `/(drawer)/favourites/tv/${SingleRoutePart<T>}` | `/favourites/tv/${SingleRoutePart<T>}` | `/(drawer)/favourites/movie/${SingleRoutePart<T>}` | `/favourites/movie/${SingleRoutePart<T>}`;
   // prettier-ignore
-  type DynamicRouteTemplate = `/(drawer)/home/movie/[id]` | `/(drawer)/home/tv/[id]`;
+  type DynamicRouteTemplate = `/(drawer)/home/movie/[id]` | `/(drawer)/home/tv/[id]` | `/(drawer)/favourites/tv/[id]` | `/(drawer)/favourites/movie/[id]`;
 
   type RelativePathString = `./${string}` | `../${string}` | '..';
   type AbsoluteRoute = DynamicRouteTemplate | StaticRoutes;

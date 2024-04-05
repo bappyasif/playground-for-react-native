@@ -1,44 +1,109 @@
 import { useQuery } from '@tanstack/react-query'
-import React from 'react'
+import React, { useState } from 'react'
 import { ImageBackground } from 'react-native'
 import Animated from 'react-native-reanimated'
-import { H1, Image, Paragraph, ScrollView, Text, YStack } from 'tamagui'
+import { Button, H1, Image, Paragraph, ScrollView, Text, YStack, useTheme } from 'tamagui'
 import { MediaType } from '~/interfaces/apiresults'
 import { getMovieDetails } from '~/services/api'
 import { Main } from '~/tamagui.config'
+import { useMMKVBoolean, useMMKVObject } from "react-native-mmkv"
+import { Favourites } from '~/interfaces/favourites'
+import { Stack } from 'expo-router'
+import { Ionicons } from '@expo/vector-icons'
 
 type Props = {
     mediaType: MediaType,
     id: string
 }
 
-export const DetailsPage = ({id, mediaType}: Props) => {
+export const DetailsPage = ({ id, mediaType }: Props) => {
+    // to use this mmKV we would have to use mac or eas for ios build to run after prebuild
+    // const [isFavourite, setIsFavourite] = useMMKVBoolean(`${mediaType}-${id}`);
+    // const [favourites, setFavourites] = useMMKVObject<Favourites[]>("favourites")
+
+    // this is an alternative approach where making favourites be stred ion state variable instead and serve it to favourites page for rendering
+    const [isFav, setIsFav] = useState(false)
+    const [favs, setFavs] = useState<Favourites[]>([])
+
+    const theme = useTheme()
+
     const movieQuery = useQuery({
         queryKey: ["movie", id],
         queryFn: () => getMovieDetails(+id, mediaType)
     })
 
-    const {data} = movieQuery
+    const { data } = movieQuery
 
-  return (
-    <Main>
-        <ScrollView>
-            <ImageBackground
-                source={{
-                    uri: `https://image.tmdb.org/t/p/w200${data?.backdrop_path}`
+    // const toggleFavourite = () => {
+    //     const current = favourites || []
+    //     if (!favourites) {
+    //         setFavourites([
+    //             ...current,
+    //             {
+    //                 id,
+    //                 mediaType,
+    //                 name: data?.name || data?.title,
+    //                 thumb: data?.poster_path
+    //             }
+    //         ])
+    //     } else {
+    //         setFavourites(current.filter(fav => fav.id !== id || mediaType !== fav.mediaType))
+    //     }
+    // }
+
+    const toggleFavs = () => {
+        const current = favs || []
+        if (!favs) {
+            setFavs([
+                ...current,
+                {
+                    id,
+                    mediaType,
+                    name: data?.name || data?.title,
+                    thumb: data?.poster_path
+                }
+            ])
+        } else {
+            setFavs(current.filter(fav => fav.id !== id || mediaType !== fav.mediaType))
+        }
+
+        setIsFav(prev => !prev)
+    }
+
+    return (
+        <Main>
+            <Stack.Screen
+                options={{
+                    headerRight: () => (
+                        <Button 
+                            // onPress={toggleFavourite}
+                            onPress={toggleFavs}
+                            scale={.9}
+                            hoverStyle={{ scale: .96 }}
+                            pressStyle={{ scale: .98 }}>
+                            {/* <Ionicons name={isFavourite ? "heart" : "heart-outline"} size={24} color={theme.blue7.get()} /> */}
+                            <Ionicons name={isFav ? "heart" : "heart-outline"} size={24} color={theme.blue7.get()} />
+                        </Button>
+                    )
                 }}
-            >
-                <Animated.Image 
-                    borderRadius={8}
+            />
+            <ScrollView>
+                <ImageBackground
                     source={{
-                        uri: `https://image.tmdb.org/t/p/w200${data?.poster_path}`
+                        uri: `https://image.tmdb.org/t/p/w200${data?.backdrop_path}`
                     }}
-                    sharedTransitionTag={`${mediaType === "movie" ? "movie" : "tv"}-${id}`}
-                    style={{
-                        width: 200, height: 400, margin: 11
-                    }}
-                />
-                {/* <Image 
+                >
+                    <Animated.Image
+                        borderRadius={8}
+                        source={{
+                            uri: `https://image.tmdb.org/t/p/w200${data?.poster_path}`
+                        }}
+                        // sharedTransitionTag={`${mediaType === "movie" ? "movie" : "tv"}-${id}`}
+                        style={{
+                            width: 200, height: 400, margin: 11
+                        }}
+                    />
+                    {/* <Image 
                     m={20}
                     borderRadius={8}
                     source={{
@@ -47,29 +112,29 @@ export const DetailsPage = ({id, mediaType}: Props) => {
                     w={200}
                     h={400}
                 /> */}
-            </ImageBackground>
+                </ImageBackground>
 
-            <YStack
-                p={11}
-                animation={"lazy"}
-                enterStyle={{
-                    opacity: 0,
-                    y: 10
-                }}
-            >
-                <H1 color={"$blue8"}>
-                    {data?.title || data?.name} 
-                    <Text fontSize={17}>({new Date(data?.release_date).getFullYear()})</Text>
-                </H1>
+                <YStack
+                    p={11}
+                    animation={"lazy"}
+                    enterStyle={{
+                        opacity: 0,
+                        y: 10
+                    }}
+                >
+                    <H1 color={"$blue8"}>
+                        {data?.title || data?.name}
+                        <Text fontSize={17}>({new Date(data?.release_date).getFullYear()})</Text>
+                    </H1>
 
-                <Paragraph theme={"alt2"}>{data?.tagline}</Paragraph>
+                    <Paragraph theme={"alt2"}>{data?.tagline}</Paragraph>
 
-                <Text fontSize={17}>{data?.overview}</Text>
-            </YStack>
-        </ScrollView>
-    </Main>
-    // <View>
-    //     <Text>DetailsPage - {id} - {mediaType}</Text>
-    // </View>
-  )
+                    <Text fontSize={17}>{data?.overview}</Text>
+                </YStack>
+            </ScrollView>
+        </Main>
+        // <View>
+        //     <Text>DetailsPage - {id} - {mediaType}</Text>
+        // </View>
+    )
 }
