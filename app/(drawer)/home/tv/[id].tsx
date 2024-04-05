@@ -5,14 +5,11 @@ import { DetailsPage } from '~/components/DetailsPage'
 import { MediaType } from '~/interfaces/apiresults'
 
 const MoviePage = () => {
-    const { id } = useLocalSearchParams<{id: string}>()
-    console.log("🚀 ~ MoviePage ~  id :",  id )
+    const { id } = useLocalSearchParams()
+    console.log("🚀 ~ TVPage ~  id :",  id )
     
     return (
-        <DetailsPage id={id} mediaType={MediaType.Movie} />
-        // <View>
-        //     <Text>MoviePage - {id}</Text>
-        // </View>
+        <DetailsPage id={id as string} mediaType={MediaType.TV} />
     )
 }
 

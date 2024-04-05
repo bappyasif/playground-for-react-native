@@ -6,9 +6,12 @@ import { getSearchResults, getTrending } from '~/services/api'
 import { Input, ScrollView, Spinner, YStack } from 'tamagui'
 import { Container, Main, Subtitle, Title } from '~/tamagui.config'
 import MovieCard from '~/components/MovieCard'
+import { useDebounce } from '~/utils/useDebounce'
 
 const HomePage = () => {
-  const [query, setQuery] = useState<string>("")
+  const [queryStr, setQuery] = useState<string>("")
+
+  const {debouncedValue} = useDebounce(queryStr, 900)
 
   const trendingQuery = useQuery({
     queryKey: ["trending"],
@@ -16,13 +19,16 @@ const HomePage = () => {
   });
 
   const searchQuery = useQuery({
-    queryKey: ["search"],
-    queryFn: () => getSearchResults( query || "tits")
+    queryKey: ["search", debouncedValue],
+    queryFn: () => getSearchResults( debouncedValue),
+    enabled: debouncedValue.length > 0
   });
 
   const { data, isLoading, isFetching, isError } = trendingQuery
 
   const { data:sQueryData, isLoading: qIsLoading, isFetching: qIsFetching, isError:qIsError } = searchQuery
+
+  // console.log(sQueryData)
   return (
     <Main>
       <Link href={"/(drawer)/home/movie/1234"}>1</Link>
@@ -43,7 +49,7 @@ const HomePage = () => {
             >
               Trending
             </Title>
-            <Input placeholder='search for a movie, tv series or a person....' placeholderTextColor={"#fff"} borderWidth={4} size={"$4.5"} value={query} onChangeText={setQuery} />
+            <Input placeholder='search for a movie, tv series or a person....' placeholderTextColor={"#fff"} borderWidth={4} size={"$4.5"} value={queryStr} onChangeText={setQuery} />
           </YStack>
         </Container>
       </ImageBackground>
@@ -54,7 +60,9 @@ const HomePage = () => {
           opacity: 0
         }}
         animation={"lazy"}
-      >Trending</Subtitle>
+      >
+        {sQueryData?.results ? "Search Results" : "Trending"}
+      </Subtitle>
 
       {
         (isLoading || qIsLoading)
@@ -65,8 +73,11 @@ const HomePage = () => {
       }
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} py={40} contentContainerStyle={{gap: 13, paddingLeft: 13}}>
-        {
+        {/* {
           data?.results?.map(item => <MovieCard key={item.id} movie={item} />)
+        } */}
+        {
+          (sQueryData?.results.length ? sQueryData : data)?.results?.map(item => <MovieCard key={item.id} movie={item} />)
         }
       </ScrollView>
     </Main>
