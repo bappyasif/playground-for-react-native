@@ -1,29 +1,43 @@
 import Colors from '@/constants/Colors';
 import { Product } from '@/types';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Link } from 'expo-router';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 type ProductListItemProps = {
-    product : Product
+    product: Product
 }
 
 const defaultPicture = 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/peperoni.png'
 
 const ProductListItem = ({ product }: ProductListItemProps) => {
     return (
-        <View style={styles.container}>
-            <Image source={{ uri: product.image || defaultPicture }} style={styles.image} />
-            <Text style={styles.title}>{product.name}</Text>
-            <Text style={styles.price}>${product.price}</Text>
-        </View>
+        <Link 
+            // href={"/product"} 
+            // href={`/product/${product.id}`} 
+            // href={`/(tabs)/menu/${product.id}`} // we can ommit (tabs) as that is optional for routing
+            href={`/menu/${product.id}`} 
+            asChild
+        >
+            {/* view doesnt have onPress method */}
+            {/* to make it clickable we can use Pressable */}
+            {/* <View style={styles.container}> */}
+            <Pressable style={styles.container}>
+                <Image source={{ uri: product.image || defaultPicture }} style={styles.image} resizeMode='contain' />
+                <Text style={styles.title}>{product.name}</Text>
+                <Text style={styles.price}>${product.price}</Text>
+            </Pressable>
+        </Link>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        // flex: 1,
+        flex: 1,
         backgroundColor: "white",
         padding: 11,
-        borderRadius: 20
+        borderRadius: 11,
+        // margin: 4,
+        maxWidth: "50%"
     },
     title: {
         fontSize: 20,

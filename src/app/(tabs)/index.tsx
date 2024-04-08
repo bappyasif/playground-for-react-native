@@ -1,14 +1,12 @@
-import ProductListItem from "@/components/ProductListItem";
-import products from "@assets/data/products";
-import { View } from "react-native";
+import { View, Text } from 'react-native'
+import React from 'react'
+import { Redirect } from 'expo-router'
 
-const product = products[0]
-
-export default function MenuScreen() {
+// doing this redirect as we are trying avoid not found error on index page after refresh
+const TabIndex = () => {
   return (
-    <View>
-      <ProductListItem product={products[0]} />
-      <ProductListItem product={products[1]} />
-    </View>
-  );
+    <Redirect href={"/menu/"} />
+  )
 }
+
+export default TabIndex
