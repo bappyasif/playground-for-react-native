@@ -1,6 +1,6 @@
 import Colors from '@/constants/Colors';
 import { Product } from '@/types';
-import { Link } from 'expo-router';
+import { Link, useSegments } from 'expo-router';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 type ProductListItemProps = {
@@ -10,12 +10,16 @@ type ProductListItemProps = {
 export const defaultPicture = 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/peperoni.png'
 
 const ProductListItem = ({ product }: ProductListItemProps) => {
+    const segments = useSegments()
+
     return (
         <Link 
             // href={"/product"} 
             // href={`/product/${product.id}`} 
             // href={`/(tabs)/menu/${product.id}`} // we can ommit (tabs) as that is optional for routing
-            href={`/menu/${product.id}`} 
+            // href={`/menu/${product.id}`} 
+            href={`/${segments[0]}/menu/${product.id}`} 
+            // href={`/${segments ? segments[0] : "(admin)"}/menu/${product.id}`} 
             asChild
         >
             {/* view doesnt have onPress method */}
