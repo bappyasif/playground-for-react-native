@@ -48,7 +48,8 @@ const MenuLayoutStack = () => {
                 }}
             />
 
-            <Stack.Screen
+            {/* moving it to oiut proiduct details page instead, as we would have access to dynamic product id readily available from there */}
+            {/* <Stack.Screen
                 name='[id]'
                 options={{
                     // way-01: adding custom header to our route
@@ -68,7 +69,7 @@ const MenuLayoutStack = () => {
                         </Link>
                     ),
                 }}
-            />
+            /> */}
         </Stack>
     )
 }
