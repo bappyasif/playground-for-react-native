@@ -32,7 +32,7 @@ const MenuLayoutStack = () => {
                     // way-01: adding custom header to our route
                     title: "Menu",
                     headerRight: () => (
-                        <Link href="/" asChild>
+                        <Link href="/(admin)/menu/create" asChild>
                             <Pressable>
                                 {({ pressed }) => (
                                     <FontAwesome
