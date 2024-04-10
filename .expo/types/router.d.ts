@@ -7,11 +7,11 @@ declare module "expo-router" {
   export * from 'expo-router/build';
 
   // prettier-ignore
-  type StaticRoutes = `/` | `/(user)/` | `/(user)` | `/(user)/menu/` | `/menu/` | `/(user)/menu` | `/(user)/two` | `/two` | `/cart` | `/leg1-product` | `/legacy-modal` | `/(user) copy/` | ` copy/` | `/(user) copy` | `/(user) copy/two` | ` copy/two` | `/(user) copy/menu/` | ` copy/menu/` | `/(user) copy/menu` | `/(admin)/` | `/(admin)` | `/(admin)/two` | `/(admin)/menu/` | `/(admin)/menu` | `/(admin)/menu/create` | `/menu/create`;
+  type StaticRoutes = `/` | `/(admin)/` | `/(admin)` | `/(admin)/menu/create` | `/menu/create` | `/(admin)/menu/` | `/menu/` | `/(admin)/menu` | `/(admin)/two` | `/two` | `/(auth)/sign-in` | `/sign-in` | `/(user)/` | `/(user)` | `/(user)/menu/` | `/(user)/menu` | `/(user)/two` | `/cart` | `/leg1-product` | `/legacy-modal` | `/(auth)/sign-up/` | `/sign-up/` | `/(auth)/sign-up` | `/(auth)/not-sign-up` | `/not-sign-up`;
   // prettier-ignore
-  type DynamicRoutes<T extends string> = `/(user)/menu/${SingleRoutePart<T>}` | `/menu/${SingleRoutePart<T>}` | `/product/${SingleRoutePart<T>}` | `/(admin)/menu/${SingleRoutePart<T>}`;
+  type DynamicRoutes<T extends string> = `/(admin)/menu/${SingleRoutePart<T>}` | `/menu/${SingleRoutePart<T>}` | `/(user)/menu/${SingleRoutePart<T>}` | `/product/${SingleRoutePart<T>}`;
   // prettier-ignore
-  type DynamicRouteTemplate = `/(user)/menu/[id]` | `/product/[id]` | `/(admin)/menu/[id]`;
+  type DynamicRouteTemplate = `/(admin)/menu/[id]` | `/(user)/menu/[id]` | `/product/[id]`;
 
   type RelativePathString = `./${string}` | `../${string}` | '..';
   type AbsoluteRoute = DynamicRouteTemplate | StaticRoutes;
