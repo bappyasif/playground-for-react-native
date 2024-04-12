@@ -5,12 +5,20 @@ import { Stack } from 'expo-router'
 const OrdersLayout = () => {
   return (
     <Stack>
-        <Stack.Screen 
-            name='index'
-            options={{
-                title: "Orders"
-            }}
-        />
+      {/* as moved index to list folder for nested rtoutes */}
+      {/* <Stack.Screen
+        name='index'
+        options={{
+          title: "Orders"
+        }}
+      /> */}
+
+      <Stack.Screen
+        name='list'
+        options={{
+          headerShown: false
+        }}
+      />
     </Stack>
   )
 }

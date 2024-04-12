@@ -7,11 +7,11 @@ declare module "expo-router" {
   export * from 'expo-router/build';
 
   // prettier-ignore
-  type StaticRoutes = `/` | `/(admin)/` | `/(admin)` | `/(admin)/menu/create` | `/menu/create` | `/(admin)/menu/` | `/menu/` | `/(admin)/menu` | `/(admin)/two` | `/two` | `/(auth)/sign-in` | `/sign-in` | `/(user)/` | `/(user)` | `/(user)/menu/` | `/(user)/menu` | `/(user)/two` | `/cart` | `/leg1-product` | `/legacy-modal` | `/(auth)/sign-up/` | `/sign-up/` | `/(auth)/sign-up` | `/(auth)/not-sign-up` | `/not-sign-up`;
+  type StaticRoutes = `/` | `/(admin)/` | `/(admin)` | `/(admin)/menu/create` | `/menu/create` | `/(admin)/menu/` | `/menu/` | `/(admin)/menu` | `/(admin)/orders/list/archive` | `/orders/list/archive` | `/(admin)/orders/list/` | `/orders/list/` | `/(admin)/orders/list` | `/(admin)/two` | `/two` | `/(auth)/not-sign-up` | `/not-sign-up` | `/(auth)/sign-in` | `/sign-in` | `/(auth)/sign-up/` | `/sign-up/` | `/(auth)/sign-up` | `/(user)/` | `/(user)` | `/(user)/menu/` | `/(user)/menu` | `/(user)/orders/` | `/orders/` | `/(user)/orders` | `/cart` | `/leg1-product` | `/legacy-modal`;
   // prettier-ignore
-  type DynamicRoutes<T extends string> = `/(admin)/menu/${SingleRoutePart<T>}` | `/menu/${SingleRoutePart<T>}` | `/(user)/menu/${SingleRoutePart<T>}` | `/product/${SingleRoutePart<T>}`;
+  type DynamicRoutes<T extends string> = `/(admin)/menu/${SingleRoutePart<T>}` | `/menu/${SingleRoutePart<T>}` | `/(admin)/orders/${SingleRoutePart<T>}` | `/orders/${SingleRoutePart<T>}` | `/(user)/menu/${SingleRoutePart<T>}` | `/(user)/orders/${SingleRoutePart<T>}` | `/product/${SingleRoutePart<T>}`;
   // prettier-ignore
-  type DynamicRouteTemplate = `/(admin)/menu/[id]` | `/(user)/menu/[id]` | `/product/[id]`;
+  type DynamicRouteTemplate = `/(admin)/menu/[id]` | `/(admin)/orders/[id]` | `/(user)/menu/[id]` | `/(user)/orders/[id]` | `/product/[id]`;
 
   type RelativePathString = `./${string}` | `../${string}` | '..';
   type AbsoluteRoute = DynamicRouteTemplate | StaticRoutes;
