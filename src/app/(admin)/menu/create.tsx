@@ -1,10 +1,11 @@
 import { View, Text, StyleSheet, TextInput, Image, Alert } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from '@/components/Button';
 import { defaultPicture } from '@/components/ProductListItem';
 import Colors from '@/constants/Colors';
 import * as ImagePicker from 'expo-image-picker';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { useDeleteProduct, useInsertProduct, useProduct, useUpdateProduct } from '@/api/products';
 
 const CreateProductScreen = () => {
   const [name, setName] = useState("")
@@ -12,8 +13,31 @@ const CreateProductScreen = () => {
   const [errors, setErrors] = useState("")
   const [image, setImage] = useState<string | null>(null);
   
-  const {id} = useLocalSearchParams<{id: string}>()
-  const isUpdating = !!id
+  const { id } = useLocalSearchParams<{ id: string }>()
+  // const { id } = useLocalSearchParams()
+
+  const idWhenTypeIsNotSpecified = parseFloat(typeof id === "string" ? id : id?.[0])
+  
+  // const isUpdating = !!id
+  const isUpdating = !!idWhenTypeIsNotSpecified
+
+  const {mutate: insertProduct} = useInsertProduct()
+
+  const {mutate: updateProduct} = useUpdateProduct()
+
+  const {data: prodData} = useProduct(idWhenTypeIsNotSpecified)
+
+  const {mutate: deleteProduct} = useDeleteProduct()
+  
+  const router = useRouter()
+
+  useEffect(() => {
+    if(prodData) {
+      setName(prodData?.name)
+      setImage(prodData.image)
+      setPrice(prodData.price.toString())
+    }
+  }, [prodData])
 
   const resetFields = () => {
     setName("");
@@ -40,7 +64,7 @@ const CreateProductScreen = () => {
 
   const onSubmit = () => {
     if(isUpdating) {
-      onUpdateCreate()
+      onUpdate()
     } else {
       onCreate()
     }
@@ -51,19 +75,36 @@ const CreateProductScreen = () => {
       return;
     }
 
-    console.warn("create product!!", name, price)
+    // console.warn("create product!!", name, price)
 
-    resetFields()
+    // save data into db
+    insertProduct({name, price: parseFloat(price), image}, {
+      onSuccess: () => {
+        resetFields()
+        router.back()
+      }
+    }) 
+
+    // resetFields()
   }
 
-  const onUpdateCreate = () => {
+  const onUpdate = () => {
     if(!validateInput()) {
       return;
     }
 
-    console.warn("updating product!!", name, price)
+    // console.warn("updating product!!", name, price)
+    updateProduct(
+      {id: idWhenTypeIsNotSpecified, name, price: parseFloat(price), image},
+      {
+        onSuccess: () => {
+          resetFields()
+          router.back()
+        }
+      }
+    )
 
-    resetFields()
+    // resetFields()
   }
 
   const pickImage = async () => {
@@ -84,7 +125,16 @@ const CreateProductScreen = () => {
   };
 
   const onDelete = () => {
-    console.warn("delete", id)
+    // console.warn("delete", id)
+    deleteProduct(
+      idWhenTypeIsNotSpecified,
+      {
+        onSuccess: () => {
+          resetFields()
+          router.replace("/(admin)")
+        }
+      }
+    )
   }
 
   const confirmDelete = () => {
