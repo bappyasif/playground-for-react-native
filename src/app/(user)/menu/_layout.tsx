@@ -1,10 +1,12 @@
-import { View, Text, Pressable } from 'react-native'
+import { View, Text, Pressable, Button } from 'react-native'
 import React from 'react'
 import { Link, Stack } from 'expo-router'
 import { FontAwesome } from '@expo/vector-icons'
 import Colors from '@/constants/Colors'
+import { supabase } from '@/lib/supabase'
 
 const MenuLayoutStack = () => {
+    
     return (
         <Stack
             screenOptions={{
@@ -22,6 +24,9 @@ const MenuLayoutStack = () => {
                         </Pressable>
                     </Link>
                 ),
+                headerLeft: () => (
+                    <Button title='Signout' onPress={async() => await supabase.auth.signOut()} color={"white"} />
+                )
             }}
         >
             <Stack.Screen
