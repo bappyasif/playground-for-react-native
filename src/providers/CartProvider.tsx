@@ -1,9 +1,16 @@
-import { CartItem, Product } from "@/types";
+import { CartItem, Tables } from "@/types";
 import { randomUUID } from "expo-crypto";
 import { PropsWithChildren, createContext, useContext, useState } from "react";
 
+// making use of supabase generated types with helpers method
+type Product = Tables<"products">
+
 type CartCtxType = {
     items: CartItem[],
+    // onAddItem: (prod: Product, size: CartItem["size"]) => void,
+    // making use of supabase generated types with helpers method
+    // onAddItem: (prod: Tables<"products">, size: CartItem["size"]) => void,
+
     onAddItem: (prod: Product, size: CartItem["size"]) => void,
     updateQuantity: (itemId: string, amount: -1 | 1) => void,
     total: number

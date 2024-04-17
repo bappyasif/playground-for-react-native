@@ -1,10 +1,13 @@
 import Colors from '@/constants/Colors';
-import { Product } from '@/types';
+import { Product, Tables } from '@/types';
 import { Link, useSegments } from 'expo-router';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 type ProductListItemProps = {
-    product: Product
+    // product: Product
+
+    // as we now have types generated form supabase we can now use it from our helper types selector instead
+    product: Tables<"products">
 }
 
 export const defaultPicture = 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/peperoni.png'
