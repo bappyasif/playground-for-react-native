@@ -4,6 +4,7 @@ import orders from '@assets/data/orders';
 import OrderListItem from '@/components/OrderListItem';
 import OrderItemListItem from '@/components/OrderItemListItem';
 import { useOrderDetails } from '@/api/orders';
+import { useUpdateOrderSubscription } from '@/api/orders/subscription';
 
 
 const OrderDetailScreen = () => {
@@ -13,6 +14,9 @@ const OrderDetailScreen = () => {
   const idWhenTypeIsNotSpecified = parseFloat(typeof id === "string" ? id : id?.[0])
 
   const {data: order, isLoading, error} = useOrderDetails(idWhenTypeIsNotSpecified)
+
+  // subscribing to real time update changes
+  useUpdateOrderSubscription(idWhenTypeIsNotSpecified)
 
   // const order = orders.find((o) => o.id.toString() === id);
 
