@@ -7,6 +7,7 @@ import Button from '@/components/Button'
 import { useCart } from '@/providers/CartProvider'
 import { PizzaSize } from '@/types'
 import { useProduct } from '@/api/products'
+import RemoteImage from '@/components/RemoteImage'
 
 // const sizes = ["S", "M", "L", "XL"]
 const sizes:PizzaSize[] = ["S", "M", "L", "XL"]
@@ -53,8 +54,12 @@ const ProductDetailsPage = () => {
       {/* // way-02: adding custom header to our route */}
       {/* instead of doing it from _layout page we could firect assing header title from page jsx by using Stack.Screen */}
       {/* <Stack.Screen options={{title: "Product Details: " + id}} /> */}
-      <Stack.Screen options={{ title: product.name }} />
-      <Image source={{ uri: product.image || defaultPicture }} style={styles.image} />
+      <Stack.Screen options={{ title: product?.name }} />
+      {/* <Image source={{ uri: product.image || defaultPicture }} style={styles.image} /> */}
+      <RemoteImage
+        fallback={defaultPicture}
+        path={product?.image!}
+        style={styles.image} />
       {/* <Text style={{ color: "red", fontSize: 20 }}>ProductDetailsPage - {id}</Text> */}
 
       <Text>Select size</Text>
@@ -66,7 +71,7 @@ const ProductDetailsPage = () => {
         ))}
       </View>
 
-      <Text style={styles.price}>Price: ${product.price}</Text>
+      <Text style={styles.price}>Price: ${product?.price}</Text>
 
       <Button text='Add to cart' onPress={addToCart} />
     </View>

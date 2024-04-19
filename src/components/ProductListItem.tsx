@@ -2,6 +2,7 @@ import Colors from '@/constants/Colors';
 import { Product, Tables } from '@/types';
 import { Link, useSegments } from 'expo-router';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import RemoteImage from './RemoteImage';
 
 type ProductListItemProps = {
     // product: Product
@@ -29,7 +30,12 @@ const ProductListItem = ({ product }: ProductListItemProps) => {
             {/* to make it clickable we can use Pressable */}
             {/* <View style={styles.container}> */}
             <Pressable style={styles.container}>
-                <Image source={{ uri: product.image || defaultPicture }} style={styles.image} resizeMode='contain' />
+                {/* <Image source={{ uri: product.image || defaultPicture }} style={styles.image} resizeMode='contain' /> */}
+                <RemoteImage 
+                    fallback={defaultPicture}
+                    path={product.image!}                
+                    style={styles.image} resizeMode='contain' 
+                />
                 <Text style={styles.title}>{product.name}</Text>
                 <Text style={styles.price}>${product.price}</Text>
             </Pressable>

@@ -9,6 +9,7 @@ import { PizzaSize } from '@/types'
 import { FontAwesome } from '@expo/vector-icons'
 import Colors from '@/constants/Colors'
 import { useProduct } from '@/api/products'
+import RemoteImage from '@/components/RemoteImage'
 
 // const sizes = ["S", "M", "L", "XL"]
 const sizes: PizzaSize[] = ["S", "M", "L", "XL"]
@@ -21,7 +22,7 @@ const ProductDetailsPage = () => {
 
   const idWhenTypeIsNotSpecified = parseFloat(typeof id === "string" ? id : id[0])
 
-  const {data: product, error, isLoading} = useProduct(idWhenTypeIsNotSpecified)
+  const { data: product, error, isLoading } = useProduct(idWhenTypeIsNotSpecified)
 
   // const product = products.find(item => item.id.toString() === id)
 
@@ -42,11 +43,11 @@ const ProductDetailsPage = () => {
   //   return <Text>Product is not found!!</Text>
   // }
 
-  if(isLoading) {
+  if (isLoading) {
     return <ActivityIndicator />
   }
 
-  if(error) {
+  if (error) {
     return <Text>Failed to fetch data</Text>
   }
 
@@ -73,11 +74,15 @@ const ProductDetailsPage = () => {
         }}
       />
 
-      <Stack.Screen options={{ title: product.name }} />
-      <Image source={{ uri: product.image || defaultPicture }} style={styles.image} />
+      <Stack.Screen options={{ title: product?.name }} />
+      {/* <Image source={{ uri: product.image || defaultPicture }} style={styles.image} /> */}
+      <RemoteImage
+        fallback={defaultPicture}
+        path={product?.image!}
+        style={styles.image} />
 
-      <Text style={styles.title}>{product.name}</Text>
-      <Text style={styles.price}>Price: ${product.price}</Text>
+      <Text style={styles.title}>{product?.name}</Text>
+      <Text style={styles.price}>Price: ${product?.price}</Text>
     </View>
   )
 }
