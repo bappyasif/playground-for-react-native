@@ -17,9 +17,9 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const {session} = useAuth()
+  const { session } = useAuth()
 
-  if(!session) {
+  if (!session) {
     // return <Redirect href={"/(auth)/sign-in"} />
     return <Redirect href={"/"} />
   }
@@ -82,6 +82,15 @@ export default function TabLayout() {
           // tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       /> */}
+
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+        }}
+      />
 
     </Tabs>
   );
