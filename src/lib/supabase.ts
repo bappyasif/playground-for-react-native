@@ -18,8 +18,13 @@ const ExpoSecureStoreAdapter = {
 // const supabaseUrl = 'YOUR_REACT_NATIVE_SUPABASE_URL';
 // const supabaseAnonKey = 'YOUR_REACT_NATIVE_SUPABASE_ANON_KEY';
 
-const supabaseUrl = 'https://gwncmcvzuqpezzsomebm.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd3bmNtY3Z6dXFwZXp6c29tZWJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTI5NTAwMDYsImV4cCI6MjAyODUyNjAwNn0.Lnbo4pRCg06eLqWgNVtQkXk0OP2jpw-oXsYcJOjQiFI';
+// const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+// const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON;
+
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL_LOCAL || "";
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_LOCAL || "";
+
+console.log(supabaseUrl, supabaseAnonKey, "!!")
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {
