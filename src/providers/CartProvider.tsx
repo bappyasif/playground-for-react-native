@@ -5,6 +5,7 @@ import { PropsWithChildren, createContext, useContext, useState } from "react";
 import { useAuth } from "./AuthProvider";
 import { useRouter } from "expo-router";
 import { useCreateOrderItems } from "@/api/order-items";
+import { initialisePaymentSheet, openPaymentSheet } from "@/lib/stripe";
 
 // making use of supabase generated types with helpers method
 type Product = Tables<"products">
@@ -78,7 +79,12 @@ const CartContextProvider = ({ children }: PropsWithChildren) => {
 
     const router = useRouter()
 
-    const checkout = () => {
+    const checkout = async () => {
+        await initialisePaymentSheet(Math.floor(total * 100)) // turned into pennies and floored it
+        const paid = await openPaymentSheet()
+
+        if(!paid) return
+
         // console.warn("checkout")
         insertOrder({
             total: total,

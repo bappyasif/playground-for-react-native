@@ -9,6 +9,7 @@ import { useColorScheme } from '@/components/useColorScheme';
 import CartContextProvider from '@/providers/CartProvider';
 import AuthProvider from '@/providers/AuthProvider';
 import QueryProvider from '@/providers/QueryProvider';
+import { StripeProvider } from '@stripe/stripe-react-native';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -52,22 +53,29 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      {/* addinf auth context provider */}
-      <AuthProvider>
-        <QueryProvider>
-          {/* adding cart context provider */}
-          <CartContextProvider>
-            <Stack>
-              {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
-              <Stack.Screen name="(admin)" options={{ headerShown: false }} />
-              <Stack.Screen name="(user)" options={{ headerShown: false }} />
-              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-              {/* <Stack.Screen name="modal" options={{ presentation: 'modal' }} /> */}
-              <Stack.Screen name="cart" options={{ presentation: 'modal' }} />
-            </Stack>
-          </CartContextProvider>
-        </QueryProvider>
-      </AuthProvider>
+      {/* for stripe */}
+      <StripeProvider
+        publishableKey={
+          process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY || ''
+        }
+      >
+        {/* addinf auth context provider */}
+        <AuthProvider>
+          <QueryProvider>
+            {/* adding cart context provider */}
+            <CartContextProvider>
+              <Stack>
+                {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
+                <Stack.Screen name="(admin)" options={{ headerShown: false }} />
+                <Stack.Screen name="(user)" options={{ headerShown: false }} />
+                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                {/* <Stack.Screen name="modal" options={{ presentation: 'modal' }} /> */}
+                <Stack.Screen name="cart" options={{ presentation: 'modal' }} />
+              </Stack>
+            </CartContextProvider>
+          </QueryProvider>
+        </AuthProvider>
+      </StripeProvider>
     </ThemeProvider>
   );
 }
