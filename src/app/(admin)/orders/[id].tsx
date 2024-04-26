@@ -6,6 +6,7 @@ import OrderListItem from '../../../components/OrderListItem';
 import { OrderStatusList } from '@/types';
 import Colors from '@/constants/Colors';
 import { useOrderDetails, useUpdateOrder } from '@/api/orders';
+import { notifyUserAboutOrderUpdate } from '@/lib/notifications';
 
 const OrderDetailScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>()
@@ -17,8 +18,14 @@ const OrderDetailScreen = () => {
 
   const {mutate: updateOrder} = useUpdateOrder()
 
-  const updateStatus = (status: string) => {
+  const updateStatus = async (status: string) => {
     updateOrder({id: idWhenTypeIsNotSpecified, updatedFields: {status}})
+
+    // console.log("notify user: ", order?.user_id)
+    if(order) {
+      // await notifyUserAboutOrderUpdate(order)
+      await notifyUserAboutOrderUpdate({...order, status})
+    }
   }
 
   // const order = orders.find((o) => o.id.toString() === id);
