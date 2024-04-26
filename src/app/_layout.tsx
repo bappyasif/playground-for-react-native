@@ -9,6 +9,7 @@ import { useColorScheme } from '@/components/useColorScheme';
 import CartContextProvider from '@/providers/CartProvider';
 import AuthProvider from '@/providers/AuthProvider';
 import QueryProvider from '@/providers/QueryProvider';
+import NotificationProvider from '@/providers/NotificationProvider';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -55,17 +56,20 @@ function RootLayoutNav() {
       {/* addinf auth context provider */}
       <AuthProvider>
         <QueryProvider>
-          {/* adding cart context provider */}
-          <CartContextProvider>
-            <Stack>
-              {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
-              <Stack.Screen name="(admin)" options={{ headerShown: false }} />
-              <Stack.Screen name="(user)" options={{ headerShown: false }} />
-              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-              {/* <Stack.Screen name="modal" options={{ presentation: 'modal' }} /> */}
-              <Stack.Screen name="cart" options={{ presentation: 'modal' }} />
-            </Stack>
-          </CartContextProvider>
+          {/* Notification provider */}
+          <NotificationProvider>
+            {/* adding cart context provider */}
+            <CartContextProvider>
+              <Stack>
+                {/* <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> */}
+                <Stack.Screen name="(admin)" options={{ headerShown: false }} />
+                <Stack.Screen name="(user)" options={{ headerShown: false }} />
+                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                {/* <Stack.Screen name="modal" options={{ presentation: 'modal' }} /> */}
+                <Stack.Screen name="cart" options={{ presentation: 'modal' }} />
+              </Stack>
+            </CartContextProvider>
+          </NotificationProvider>
         </QueryProvider>
       </AuthProvider>
     </ThemeProvider>
