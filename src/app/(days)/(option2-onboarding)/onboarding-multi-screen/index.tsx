@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, SafeAreaView, Pressable } from 'react-native'
 import React from 'react'
-import { Stack } from 'expo-router'
+import { Link, Stack } from 'expo-router'
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 const OnboardingScreen = () => {
@@ -19,9 +19,11 @@ const OnboardingScreen = () => {
           <View style={styles.btnsRow}>
             <Text style={styles.btnTxt}>Skip</Text>
 
-            <Pressable style={styles.btn}>
-              <Text style={styles.btnTxt}>Continue</Text>
-            </Pressable>
+            <Link href={"/onboarding2-multi-screen"} asChild>
+              <Pressable style={styles.btn}>
+                <Text style={styles.btnTxt}>Continue</Text>
+              </Pressable>
+            </Link>
             {/* <Pressable style={styles.btn}>
               <Text style={styles.btnTxt}>Skip</Text>
             </Pressable> */}
