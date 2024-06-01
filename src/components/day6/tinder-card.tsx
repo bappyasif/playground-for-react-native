@@ -1,6 +1,7 @@
 import { Dimensions, Image, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
+import Animated, { SharedValue, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 
 export const TinderCardWidth = Dimensions.get("screen").width * 0.8
 
@@ -12,21 +13,51 @@ type CardProps = {
         image: string
     },
     currIndex: number,
-    numOfCards: number
+    numOfCards: number,
+    activeIndex: SharedValue<number>
 }
 
-export default function TinderCard({ user, currIndex, numOfCards }: CardProps) {
+export default function TinderCard({ user, currIndex, numOfCards, activeIndex }: CardProps) {
+    //  range
+
+    const animatedCard = useAnimatedStyle(() => ({
+        // opacity: .5
+        opacity: interpolate(
+            activeIndex.value,
+            [currIndex - 1, currIndex, currIndex + 1],
+            [1 - 1 / 5, 1, 1]
+        ),
+
+        transform: [
+            {
+                scale: interpolate(
+                    activeIndex.value, 
+                    [currIndex - 1, currIndex, currIndex + 1],
+                    [0.95, 1, 1.1]
+                )
+            },
+            {
+                translateY: interpolate(
+                    activeIndex.value,
+                    [currIndex - 1, currIndex, currIndex + 1],
+                    [-27, 0, 0]
+                )
+            }
+        ]
+    }))
+
     return (
-        <View
+        <Animated.View
             style={[
                 styles.card,
+                animatedCard,
                 { 
                     zIndex: numOfCards - currIndex,
                     // opacity: 0.4,
-                    opacity: 1 - currIndex * 0.1,
+                    // opacity: 1 - currIndex * 0.1, // removing opacioty as we are using animated card styles
                     transform: [
-                        {translateY: -currIndex * 36},
-                        {scale: 1 - currIndex * .1}, // each subseques cards will be 10% smaller than its previous card
+                        // {translateY: -currIndex * 36},
+                        // {scale: 1 - currIndex * .1}, // each subseques cards will be 10% smaller than its previous card
                         // {translateY: -currIndex * 60}
                     ] 
                 }
@@ -41,7 +72,7 @@ export default function TinderCard({ user, currIndex, numOfCards }: CardProps) {
             <View style={styles.footer}>
                 <Text style={styles.name}>{user.name}</Text>
             </View>
-        </View>
+        </Animated.View>
     )
 }
 

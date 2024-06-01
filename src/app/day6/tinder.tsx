@@ -2,6 +2,7 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import TinderCard from '@/components/day6/tinder-card'
 import { Stack } from 'expo-router';
+import { useSharedValue } from 'react-native-reanimated';
 
 const dummyUsers = [
     {
@@ -43,11 +44,13 @@ const dummyUsers = [
 ];
 
 const TinderSwipeScreen = () => {
+    const activeIndex = useSharedValue(0)
+
     return (
         <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
             <Stack.Screen options={{headerShown: false}} />
 
-            {dummyUsers.map((user, idx) => <TinderCard key={user.id} user={user} numOfCards={dummyUsers.length} currIndex={idx} />)}
+            {dummyUsers.map((user, idx) => <TinderCard key={user.id} user={user} numOfCards={dummyUsers.length} currIndex={idx} activeIndex={activeIndex} />)}
             {/* <TinderCard /> */}
         </View>
     )
