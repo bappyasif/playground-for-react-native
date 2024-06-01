@@ -29,7 +29,7 @@ export default function RootLayout() {
     if (fontsLoaded || fontError) {
       // SplashScreen.hideAsync();
       setAppReady(true);
-      console.log("fu nnottt")
+      // console.log("fu nnottt")
     }
   }, [fontsLoaded, fontError]);
 
@@ -39,11 +39,11 @@ export default function RootLayout() {
     return (
       <AnimatedSplashScreen
         onAnimationFinish={(isCancelled) => {
-          console.log("fu", isCancelled)
+          // console.log("fu", isCancelled)
           // setSplashAnimationFinished(true);
           if (!isCancelled) {
             setSplashAnimationFinished(true);
-            console.log("fu !!")
+            // console.log("fu !!")
             // setAppReady(true);
             SplashScreen.hideAsync();
           }

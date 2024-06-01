@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 export const DayListItem = ({ day }: { day: number }) => {
     return (
-        <Link href={`/day5`} asChild>
+        <Link href={`/day6`} asChild>
             <Pressable style={styles.box}>
                 <Text style={styles.text}>{day}</Text>
             </Pressable>
