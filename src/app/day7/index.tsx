@@ -4,20 +4,20 @@ import { Link, Stack } from 'expo-router'
 import MarkdownDisplay from '@/components/day3/markdown-display'
 
 const agenda = `
-# day6 - Tinder Swipe
+# day7 - Voice Memos
 
-Creating a tinder swipe usecase
+Work with microphone and audio playback
 `
 
 const DayDetailsScreen = () => {
     return (
         <SafeAreaView style={{flex: 1}}>
-            <Stack.Screen options={{ title: `Day 6: Tinder Swipe` }} />
+            <Stack.Screen options={{ title: `Day 7: Voice Memo` }} />
 
             <MarkdownDisplay>{agenda}</MarkdownDisplay>
 
-            <Link href={"/day6/tinder"} asChild>
-                <Button title='Go to Tinder Screen' />
+            <Link href={"/day7/memos"} asChild>
+                <Button title='Go to Voice Memos' />
             </Link>
 
         </SafeAreaView>
