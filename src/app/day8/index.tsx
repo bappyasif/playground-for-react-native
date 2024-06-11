@@ -4,20 +4,20 @@ import { Link, Stack } from 'expo-router'
 import MarkdownDisplay from '@/components/day3/markdown-display'
 
 const agenda = `
-# day7 - Voice Memos
+# day8 - Weather App
 
-Work with microphone and audio playback
+Work with weather data
 `
 
 const DayDetailsScreen = () => {
     return (
         <SafeAreaView style={{flex: 1}}>
-            <Stack.Screen options={{ title: `Day 7: Voice Memo` }} />
+            <Stack.Screen options={{ title: `Day 8: Weather App` }} />
 
             <MarkdownDisplay>{agenda}</MarkdownDisplay>
 
-            <Link href={"/day7/memos"} asChild>
-                <Button title='Go to Voice Memos' />
+            <Link href={"/day8/weather"} asChild>
+                <Button title='Weather data' />
             </Link>
 
         </SafeAreaView>
