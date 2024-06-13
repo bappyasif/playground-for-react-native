@@ -4,20 +4,20 @@ import { Link, Stack } from 'expo-router'
 import MarkdownDisplay from '@/components/day3/markdown-display'
 
 const agenda = `
-# day8 - Weather App
+# day9 - Authentication
 
-Work with weather data
+using aws amplify v6
 `
 
 const DayDetailsScreen = () => {
     return (
         <SafeAreaView style={{flex: 1}}>
-            <Stack.Screen options={{ title: `Day 8: Weather App` }} />
+            <Stack.Screen options={{ title: `Day 9: Authentication Flow` }} />
 
             <MarkdownDisplay>{agenda}</MarkdownDisplay>
 
-            <Link href={"/day8/weather"} asChild>
-                <Button title='Weather data' />
+            <Link href={"/day9/protected"} asChild>
+                <Button title='Authenticate' />
             </Link>
 
         </SafeAreaView>

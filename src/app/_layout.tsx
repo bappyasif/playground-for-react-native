@@ -9,6 +9,11 @@ import { GestureHandlerRootView } from "react-native-gesture-handler"
 import AnimatedSplashScreen from "@/components/day4/animated-screen";
 import Animated, { FadeIn } from "react-native-reanimated";
 
+import {Amplify} from "aws-amplify"
+import amplifyconfig from '@/amplifyconfiguration.json';
+
+Amplify.configure(amplifyconfig);
+
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
