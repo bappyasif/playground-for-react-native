@@ -8,6 +8,7 @@ import { ActivityIndicator } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import AnimatedSplashScreen from "@/components/day4/animated-screen";
 import Animated, { FadeIn } from "react-native-reanimated";
+import BiometricProvider from "@/components/day10/BiometricsProvider";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -53,13 +54,15 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <Animated.View style={{ flex: 1 }} entering={FadeIn}>
-        <Stack screenOptions={{}}>
-          <Stack.Screen name="index" options={{ title: 'DEVember' }} />
-        </Stack>
-      </Animated.View>
-    </GestureHandlerRootView>
+    <BiometricProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <Animated.View style={{ flex: 1 }} entering={FadeIn}>
+          <Stack screenOptions={{}}>
+            <Stack.Screen name="index" options={{ title: 'DEVember' }} />
+          </Stack>
+        </Animated.View>
+      </GestureHandlerRootView>
+    </BiometricProvider>
   )
 
   // if (!fontsLoaded && !fontError) {
