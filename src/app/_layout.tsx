@@ -10,6 +10,31 @@ import AnimatedSplashScreen from "@/components/day4/animated-screen";
 import Animated, { FadeIn } from "react-native-reanimated";
 import BiometricProvider from "@/components/day10/BiometricsProvider";
 
+import { Amplify } from "aws-amplify"
+import amplifyconfig from '@/amplifyconfiguration.json';
+
+import { Theme, ThemeProvider } from "@aws-amplify/ui-react-native"
+
+Amplify.configure(amplifyconfig);
+
+const theme:Theme = {
+  tokens: {
+    colors: {
+      // background: {
+      //   primary: `floralwhite`
+      // },
+      background: {
+        // This will resolve to #fff in light mode
+        // and #000 in dark mode because of the override below
+        primary: '{colors.gray}'
+      },
+      font: {
+        primary: 'red'
+      }
+    }
+  }
+}
+
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
