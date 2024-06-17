@@ -12,11 +12,11 @@ import Animated, { FadeIn } from "react-native-reanimated";
 import { Amplify } from "aws-amplify"
 import amplifyconfig from '@/amplifyconfiguration.json';
 
-import { Theme, ThemeProvider } from "@aws-amplify/ui-react-native"
+import { Authenticator, Theme, ThemeProvider } from "@aws-amplify/ui-react-native"
 
 Amplify.configure(amplifyconfig);
 
-const theme:Theme = {
+const theme: Theme = {
   tokens: {
     colors: {
       // background: {
@@ -78,15 +78,17 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider theme={theme}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <Animated.View style={{ flex: 1 }} entering={FadeIn}>
-          <Stack screenOptions={{}}>
-            <Stack.Screen name="index" options={{ title: 'DEVember' }} />
-          </Stack>
-        </Animated.View>
-      </GestureHandlerRootView>
-    </ThemeProvider>
+    <Authenticator.Provider>
+      <ThemeProvider theme={theme}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <Animated.View style={{ flex: 1 }} entering={FadeIn}>
+            <Stack screenOptions={{}}>
+              <Stack.Screen name="index" options={{ title: 'DEVember' }} />
+            </Stack>
+          </Animated.View>
+        </GestureHandlerRootView>
+      </ThemeProvider>
+    </Authenticator.Provider>
   )
 
   // if (!fontsLoaded && !fontError) {

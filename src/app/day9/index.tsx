@@ -20,6 +20,10 @@ const DayDetailsScreen = () => {
                 <Button title='Authenticate' />
             </Link>
 
+            <Link href={"/day9/auth/sign-in"} asChild>
+                <Button title='Sign in' />
+            </Link>
+
         </SafeAreaView>
     )
 }
