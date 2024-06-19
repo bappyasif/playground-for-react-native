@@ -1,7 +1,7 @@
 import { ActivityIndicator, Button, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Stack, useFocusEffect } from 'expo-router'
-import { Camera, PhotoFile, TakePhotoOptions, VideoFile, useCameraDevice, useCameraPermission, useMicrophonePermission } from 'react-native-vision-camera'
+import { Camera, PhotoFile, TakePhotoOptions, VideoFile, useCameraDevice, useCameraPermission, useCodeScanner, useMicrophonePermission } from 'react-native-vision-camera'
 import { FontAwesome5, Ionicons } from "@expo/vector-icons"
 import { ResizeMode, Video } from "expo-av"
 
@@ -13,6 +13,13 @@ const CameraScreen = () => {
     // const device = useCameraDevice('back')
     const device = useCameraDevice('front', {
         physicalDevices: ["ultra-wide-angle-camera"]
+    })
+
+    const codeScanner = useCodeScanner({
+        codeTypes: ['qr', 'ean-13'],
+        onCodeScanned: (codes) => {
+            console.log(`Scanned ${codes.length} codes!`)
+        }
     })
 
     // const isFocused = useIsFocused()
@@ -28,6 +35,8 @@ const CameraScreen = () => {
     const [isRecording, setIsRecording] = useState(false)
 
     const [video, setVideo] = useState<VideoFile>()
+
+    const [mode, setMode] = useState("camera")
 
     const ref = useRef<Camera>(null)
 
@@ -119,16 +128,57 @@ const CameraScreen = () => {
         <View style={{ flex: 1 }}>
             <Stack.Screen options={{ headerShown: false }} />
 
+            {/* <Camera
+                style={StyleSheet.absoluteFill}
+                device={device}
+                codeScanner={codeScanner}
+                isActive={isActive && !photo && !video && mode === "qr"}
+            />
+
             <Camera
                 ref={ref}
                 style={StyleSheet.absoluteFill}
                 device={device}
+                isActive={isActive && !photo && !video && mode === "camera"}
+                photo={true}
+                video={true}
+                audio={true}
+            /> */}
+
+            {
+                mode === "qr"
+                    ? <Camera
+                        style={StyleSheet.absoluteFill}
+                        device={device}
+                        codeScanner={codeScanner}
+                        isActive={true}
+                    />
+                    : (
+                        <Camera
+                            ref={ref}
+                            style={StyleSheet.absoluteFill}
+                            device={device}
+                            // codeScanner={codeScanner}
+                            // isActive={true}
+                            isActive={isActive && !photo}
+                            photo={true}
+                            video={true}
+                            audio={true}
+                        />
+                    )
+            }
+
+            {/* <Camera
+                ref={ref}
+                style={StyleSheet.absoluteFill}
+                device={device}
+                codeScanner={codeScanner}
                 // isActive={true}
                 isActive={isActive && !photo}
                 photo={true}
                 video={true}
                 audio={true}
-            />
+            /> */}
 
             {
                 video
@@ -196,10 +246,15 @@ const CameraScreen = () => {
                 !photo && !video
                     ? (
                         <>
-                            <View style={styles.flash}>
+                            <View style={[styles.flash, { gap: 31 }]}>
                                 <Ionicons
                                     name={flash === "off" ? "flash-off" : 'flash'} size={24} color={"black"}
                                     onPress={() => setFlash((curr) => (curr === "off" ? "on" : "off"))}
+                                />
+
+                                <Ionicons
+                                    name={mode === "camera" ? "qr-code-sharp" : "camera"} size={24} color={"black"}
+                                    onPress={() => setMode(mode === "qr" ? "camera" : "qr")}
                                 />
                             </View>
 
