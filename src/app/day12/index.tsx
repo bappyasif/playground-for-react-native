@@ -4,20 +4,20 @@ import { Link, Stack } from 'expo-router'
 import MarkdownDisplay from '@/components/day3/markdown-display'
 
 const agenda = `
-# day11 - Camera app
+# day12 - Video feed
 
-Take photos and videos with react native vision camera
+Video feed similar to Tiktok, IG reels, Youtube shorts
 `
 
 const DayDetailsScreen = () => {
     return (
-        <SafeAreaView style={{flex: 1}}>
-            <Stack.Screen options={{ title: `Day 11: Camera App` }} />
+        <SafeAreaView style={{ flex: 1 }}>
+            <Stack.Screen options={{ title: `Day 12: Video Feeds` }} />
 
             <MarkdownDisplay>{agenda}</MarkdownDisplay>
 
-            <Link href={"/day11/camera"} asChild>
-                <Button title='Camera App' />
+            <Link href={"/day12/feed"} asChild>
+                <Button title='Video Feed' />
             </Link>
 
         </SafeAreaView>
