@@ -1,11 +1,14 @@
 import { ActivityIndicator, Button, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Stack, useFocusEffect } from 'expo-router'
-import { Camera, PhotoFile, TakePhotoOptions, useCameraDevice, useCameraPermission } from 'react-native-vision-camera'
+import { Camera, PhotoFile, TakePhotoOptions, VideoFile, useCameraDevice, useCameraPermission, useMicrophonePermission } from 'react-native-vision-camera'
 import { FontAwesome5, Ionicons } from "@expo/vector-icons"
+import { ResizeMode, Video } from "expo-av"
 
 const CameraScreen = () => {
     const { hasPermission, requestPermission } = useCameraPermission()
+
+    const { hasPermission: hasMicrophonePermission, requestPermission: requestMicrophonePermission } = useMicrophonePermission()
 
     // const device = useCameraDevice('back')
     const device = useCameraDevice('front', {
@@ -22,6 +25,10 @@ const CameraScreen = () => {
 
     const [flash, setFlash] = useState<TakePhotoOptions["flash"]>("off")
 
+    const [isRecording, setIsRecording] = useState(false)
+
+    const [video, setVideo] = useState<VideoFile>()
+
     const ref = useRef<Camera>(null)
 
     const uploadPhoto = async () => {
@@ -36,11 +43,48 @@ const CameraScreen = () => {
     }
 
     const onTakePicturePressed = async () => {
+        if (isRecording) {
+            ref.current?.stopRecording();
+            return
+        }
+
         const photo = await ref.current?.takePhoto({
             flash: flash
         })
+
         console.log("picture taken!!", photo)
+
         setPhoto(photo)
+    }
+
+    const onStartRecording = async () => {
+        console.log("recording!!")
+
+        if (!ref.current) {
+            return
+        }
+
+        if (isRecording) {
+            // setIsRecording(false)
+            console.log("here~~")
+            ref.current?.stopRecording();
+            // return
+        }
+
+        setIsRecording(true)
+
+        ref.current.startRecording({
+            flash: flash === "on" ? "on" : "off",
+            onRecordingFinished: (video) => {
+                console.log(video)
+                setIsRecording(false)
+                setVideo(video)
+            },
+            onRecordingError: (error) => {
+                console.error(error)
+                setIsRecording(false)
+            }
+        })
     }
 
     useFocusEffect(useCallback(() => {
@@ -55,9 +99,13 @@ const CameraScreen = () => {
         if (!hasPermission) {
             requestPermission()
         }
-    }, [hasPermission])
 
-    if (!hasPermission) {
+        if (!hasMicrophonePermission) {
+            requestMicrophonePermission()
+        }
+    }, [hasPermission, hasMicrophonePermission])
+
+    if (!hasPermission || !hasMicrophonePermission) {
         return (
             <ActivityIndicator />
         )
@@ -78,7 +126,27 @@ const CameraScreen = () => {
                 // isActive={true}
                 isActive={isActive && !photo}
                 photo={true}
+                video={true}
+                audio={true}
             />
+
+            {
+                video
+                    ? (
+                        <Video
+                            // ref={video}
+                            style={StyleSheet.absoluteFill}
+                            source={{
+                                uri: video.path
+                                // uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
+                            }}
+                            useNativeControls
+                            resizeMode={ResizeMode.CONTAIN}
+                            isLooping
+                        // onPlaybackStatusUpdate={status => setStatus(() => status)}
+                        />
+                    ) : null
+            }
 
             {
                 photo
@@ -89,24 +157,59 @@ const CameraScreen = () => {
 
                             <View style={styles.upload}>
                                 <Button onPress={uploadPhoto} title='Upload' />
-                            </View> 
+                            </View>
                         </>
                     ) : (
+                        null
+                        // <>
+                        //     <View style={styles.flash}>
+                        //         <Ionicons
+                        //             name={flash === "off" ? "flash-off" : 'flash'} size={24} color={"black"}
+                        //             onPress={() => setFlash((curr) => (curr === "off" ? "on" : "off"))}
+                        //         />
+                        //     </View>
+                        //     {/* <Camera
+                        //         ref={ref}
+                        //         style={StyleSheet.absoluteFill}
+                        //         device={device}
+                        //         // isActive={true}
+                        //         isActive={isActive}
+                        //         photo={true}
+                        //     /> */}
+                        //     <Pressable
+                        //         style={[styles.capture, { backgroundColor: isRecording ? "red" : "floralwhite" }]}
+                        //         onPress={onTakePicturePressed}
+                        //         onLongPress={onStartRecording}
+                        //     />
+
+                        //     {/* simulator is not respondng to recording correctly!! */}
+                        //     {/* <Pressable
+                        //         style={[styles.capture, { backgroundColor: isRecording ? "red" : "floralwhite" }]}
+                        //         // onPress={onTakePicturePressed}
+                        //         onPress={onStartRecording}
+                        //     /> */}
+                        // </>
+                    )
+            }
+
+            {
+                !photo && !video
+                    ? (
                         <>
                             <View style={styles.flash}>
-                                <Ionicons name={flash === "off" ? "flash-off" : 'flash'} size={24} color={"black"} onPress={() => setFlash((curr) => (curr === "off" ? "on" : "off"))} />
+                                <Ionicons
+                                    name={flash === "off" ? "flash-off" : 'flash'} size={24} color={"black"}
+                                    onPress={() => setFlash((curr) => (curr === "off" ? "on" : "off"))}
+                                />
                             </View>
-                            {/* <Camera
-                                ref={ref}
-                                style={StyleSheet.absoluteFill}
-                                device={device}
-                                // isActive={true}
-                                isActive={isActive}
-                                photo={true}
-                            /> */}
-                            <Pressable style={styles.capture} onPress={onTakePicturePressed} />
+
+                            <Pressable
+                                style={[styles.capture, { backgroundColor: isRecording ? "red" : "floralwhite" }]}
+                                onPress={onTakePicturePressed}
+                                onLongPress={onStartRecording}
+                            />
                         </>
-                    )
+                    ) : null
             }
 
             {/* <Camera
