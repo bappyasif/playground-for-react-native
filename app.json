@@ -35,6 +35,15 @@
         {
           "faceIDPermission": "Allow $(PRODUCT_NAME) to use Face ID. to see protected info"
         }
+      ],
+      [
+        "react-native-vision-camera",
+        {
+          "cameraPermissionText": "$(PRODUCT_NAME) needs access to your Camera to take photos.",
+  
+          "enableMicrophonePermission": true,
+          "microphonePermissionText": "$(PRODUCT_NAME) needs access to your Microphone."
+        }
       ]
     ]
   }
