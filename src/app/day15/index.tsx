@@ -4,20 +4,20 @@ import { Link, Stack } from 'expo-router'
 import MarkdownDisplay from '@/components/day3/markdown-display'
 
 const agenda = `
-# day12 - Video feed
+# day15 - Todo app
 
-Video feed similar to Tiktok, IG reels, Youtube shorts
+an extensive todo application
 `
 
 const DayDetailsScreen = () => {
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <Stack.Screen options={{ title: `Day 12: Video Feeds` }} />
+            <Stack.Screen options={{ title: `Day 15: ToDo App` }} />
 
             <MarkdownDisplay>{agenda}</MarkdownDisplay>
 
-            <Link href={"/day12/feed"} asChild>
-                <Button title='Video Feed' />
+            <Link href={"/day15/todo"} asChild>
+                <Button title='TODO App' />
             </Link>
 
         </SafeAreaView>
