@@ -1,9 +1,11 @@
-import { FlatList, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Button, FlatList, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useState } from 'react'
 import { Stack } from 'expo-router'
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
 import NewTaskInput from '@/components/day15/NewTaskInput'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import TaskListItem from '@/components/day15/TaskListItem'
+import { useHeaderHeight } from '@react-navigation/elements';
 
 export type Task = { isFinished: boolean, title: string }
 
@@ -33,12 +35,40 @@ const dummytasks: Task[] = [
 const TodoScreen = () => {
     const [tasks, setTasks] = useState(dummytasks)
 
-    // const [newTask, setNewTask] = useState("")
+    const [searchQuery, setSearchQuery] = useState("")
+
+    const [tab, setTab] = useState<"All" | "Todo" | "Done">("All")
+
+    const headerHeight = useHeaderHeight()
+
+    const filteredTasks = tasks.filter((task) => {
+        if(tab === "Todo" && task.isFinished) {
+            return false
+        }
+
+        if(tab === "Done" && !task.isFinished) {
+            return false
+        }
+
+        if(!searchQuery) {
+            return true
+        }
+
+        return task.title.toLocaleLowerCase().trim().includes(searchQuery.toLocaleLowerCase().trim())
+    })
 
     const onItemPressed = (index: number) => {
         setTasks(curr => {
             const updatedTasks = [...curr]
             updatedTasks[index].isFinished = !updatedTasks[index].isFinished
+            return updatedTasks
+        })
+    }
+
+    const deleteTask = (index: number) => {
+        setTasks(curr => {
+            const updatedTasks = [...curr]
+            updatedTasks.splice(index, 1)
             return updatedTasks
         })
     }
@@ -51,29 +81,52 @@ const TodoScreen = () => {
         >
             {/* <Stack.Screen options={{ title: "TODO" }} /> */}
 
-            <Stack.Screen options={{ headerShown: false }} />
+            <Stack.Screen options={{ 
+                headerShown: true, 
+                title: "Todo Lists", 
+                headerBackTitleVisible: false,
+                headerSearchBarOptions: {
+                    hideWhenScrolling: true,
+                    onChangeText: (e) => setSearchQuery(e.nativeEvent.text)
+                }
+            }} 
+                />
 
             <SafeAreaView
-                // edges={['bottom']}
-            // style={{ flex: 1, paddingTop: 65 + 35 }}
+                edges={['bottom']}
+            style={{ 
+                flex: 1, 
+                // paddingTop: headerHeight + 35 
+                paddingTop: 65 + 35 
+            }}
             >
+                <View style={{flexDirection: "row", marginTop: 10, justifyContent: "space-around"}}>
+                    <Button title='All' onPress={() => setTab("All")} />
+                    <Button title='Todo' onPress={() => setTab("Todo")} />
+                    <Button title='Done' onPress={() => setTab("Done")} />
+                </View>
 
                 <FlatList
-                    contentContainerStyle={{ gap: 5, padding: 10 }}
-                    data={tasks}
+                    contentContainerStyle={{ gap: 5, padding: 10, marginTop: 10 }}
+                    // data={tasks}
+                    data={filteredTasks}
                     removeClippedSubviews={false}
-                    renderItem={({ item, index }) => (
-                        <Pressable
-                            onPress={() => onItemPressed(index)}
-                            style={styles.taskContainer}
-                        >
-                            <MaterialCommunityIcons
-                                name={item.isFinished ? 'checkbox-marked-circle-outline' : 'checkbox-blank-circle-outline'}
-                                size={24} color={item.isFinished ? "darkgray" : "dimgrey"}
-                            />
-                            <Text style={[styles.taskTitle, { textDecorationLine: item.isFinished ? "line-through" : "none", color: item.isFinished ? "darkgrey" : "dimgrey" }]}>{item.title}</Text>
-                        </Pressable>
-                    )}
+                    renderItem={({ item, index }) => <TaskListItem task={item} onItemPressed={() => onItemPressed(index)} onDelete={() => deleteTask(index)} />}
+                    // to make sure delete action does not stay visible we will specify a distinct key for uniqueness
+                    keyExtractor={(item) => item.title}
+
+                    // renderItem={({ item, index }) => (
+                    //     <Pressable
+                    //         onPress={() => onItemPressed(index)}
+                    //         style={styles.taskContainer}
+                    //     >
+                    //         <MaterialCommunityIcons
+                    //             name={item.isFinished ? 'checkbox-marked-circle-outline' : 'checkbox-blank-circle-outline'}
+                    //             size={24} color={item.isFinished ? "darkgray" : "dimgrey"}
+                    //         />
+                    //         <Text style={[styles.taskTitle, { textDecorationLine: item.isFinished ? "line-through" : "none", color: item.isFinished ? "darkgrey" : "dimgrey" }]}>{item.title}</Text>
+                    //     </Pressable>
+                    // )}
 
                     // ListFooterComponent={<NewTaskInput />}
                     // ListFooterComponent={() => <NewTaskInput onAdd={(newTodo: typeof tasks[0]) => setTasks(curr => [...curr, newTodo])} />}
@@ -111,20 +164,22 @@ const styles = StyleSheet.create({
         backgroundColor: "whitesmoke",
         flex: 1
     },
-    taskContainer: {
-        padding: 5,
-        // borderWidth: 1,
-        // borderColor: "grey",
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 10
-    },
-    taskTitle: {
-        fontFamily: "Inter",
-        fontSize: 15,
-        // color: "dimgrey",
-        flex: 1
-    },
+    
+    // taskContainer: {
+    //     padding: 5,
+    //     // borderWidth: 1,
+    //     // borderColor: "grey",
+    //     flexDirection: "row",
+    //     alignItems: "center",
+    //     gap: 10
+    // },
+    // taskTitle: {
+    //     fontFamily: "Inter",
+    //     fontSize: 15,
+    //     // color: "dimgrey",
+    //     flex: 1
+    // },
+
     // input: {
     //     fontFamily: "Inter",
     //     fontSize: 15,
