@@ -1,6 +1,6 @@
 import { View, Text, Platform } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
-import { Slot } from 'expo-router'
+import { Slot, router } from 'expo-router'
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
@@ -26,6 +26,9 @@ const NotificationsLayout = () => {
     // console.warn("notifications setup")
 
     useEffect(() => {
+        // so that when we are handling with notifications we make sure to do all this while in mounted state.
+        // sometinmes in async functions such as these app mount status might be unmounted even though they are in mouted beforehand those async functions could do their actions
+        let isMounted = true;
         // fetch expo push token
         registerForPushNotificationsAsync().then(token => {
             if (token) {
@@ -39,7 +42,17 @@ const NotificationsLayout = () => {
 
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
             console.log(response);
+            // when we want navigate to specific route screen upon user interaction with notification from device notifications tray
+            redirect(response.notification)
         });
+
+        Notifications.getLastNotificationResponseAsync()
+      .then(response => {
+        if (!isMounted || !response?.notification) {
+          return;
+        }
+        redirect(response?.notification);
+      });
 
         return () => {
             // notificationListener.current?.remove()
@@ -48,8 +61,17 @@ const NotificationsLayout = () => {
 
             responseListener.current &&
                 Notifications.removeNotificationSubscription(responseListener.current);
+
+            isMounted = false
         }
     }, [])
+
+    function redirect(notification: Notifications.Notification) {
+        const url = notification.request.content.data?.url;
+        if (url) {
+          router.push(url);
+        }
+      }
 
     console.log("Token: ", expoPushToken)
     console.log("notifications: ", notification)

@@ -19,9 +19,9 @@ const NotificationsScreen = () => {
 async function schedulePushNotification() {
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: "You've got mail! 📬",
+        title: "You've got mail! 📬 Checkout this in Test screen",
         body: 'Here is the notification body',
-        data: { data: 'goes here', test: { test1: 'more data' } },
+        data: { data: 'goes here', test: { test1: 'more data' }, url: "/test" },
       },
       trigger: { seconds: 2 },
     });
