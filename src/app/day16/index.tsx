@@ -4,20 +4,20 @@ import { Link, Stack } from 'expo-router'
 import MarkdownDisplay from '@/components/day3/markdown-display'
 
 const agenda = `
-# day14 - Push Notifictaions
+# day16 - Todo app with react context
 
-send and recieve push notifications
+an extensive todo application with react context
 `
 
 const DayDetailsScreen = () => {
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <Stack.Screen options={{ title: `Day 14: Notifications` }} />
+            <Stack.Screen options={{ title: `Day 16: ToDo App` }} />
 
             <MarkdownDisplay>{agenda}</MarkdownDisplay>
 
-            <Link href={"/day14/notifications"} asChild>
-                <Button title='Go to notifications' />
+            <Link href={"/day16/todo"} asChild>
+                <Button title='TODO App' />
             </Link>
 
         </SafeAreaView>
