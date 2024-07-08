@@ -3,17 +3,24 @@ import React from 'react'
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import Reanimated from 'react-native-reanimated';
-import { Task } from './TasksContextProvider';
+// import { Task, useTasks } from './TasksContextProvider';
+import { type Task, useTasks } from './TasksContextProvider';
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
 const RightActions = ({
     dragAnimatedValue,
-    onDelete,
+    // onDelete,
+    // index
+    task
 }: {
     dragAnimatedValue: Animated.AnimatedInterpolation<string | number>;
-    onDelete: () => void;
+    // onDelete: () => void;
+    // index: number
+    task: Task
 }) => {
+    const { deleteTask } = useTasks()
+
     const animatedStyles = {
         transform: [
             {
@@ -39,7 +46,10 @@ const RightActions = ({
             ]}
         >
             <MaterialCommunityIcons
-                onPress={onDelete}
+                // onPress={onDelete}
+                // onPress={() => deleteTask(index)}
+                onPress={() => deleteTask(task.id)}
+
                 name="delete"
                 size={20}
                 color="white"
@@ -50,11 +60,20 @@ const RightActions = ({
 
 type TaskListItem = {
     task: Task;
-    onItemPressed: () => void;
-    onDelete: () => void;
+    // onItemPressed: () => void;
+    // onDelete: () => void;
+    // index: number
 };
 
-const TaskListItem = ({ task, onItemPressed, onDelete }: TaskListItem) => {
+const TaskListItem = ({ task }: TaskListItem) => {
+    // const { onItemPressed, deleteTask } = useTasks()
+    // const onCreate = () => onItemPressed(index)
+    const { toggleFinished, deleteTask } = useTasks()
+    const onUpdate = () => toggleFinished(task.id)
+    // const onUpdate = () => onItemPressed(task.id)
+
+    // even more better usecase for context when used it in RightActions directly instead
+    // const onDelete = () => deleteTask(index)
     return (
         // to give entire list item a layout shifting view
         <Reanimated.View>
@@ -62,11 +81,18 @@ const TaskListItem = ({ task, onItemPressed, onDelete }: TaskListItem) => {
                 renderRightActions={(progressAnimatedValue, dragAnimatedValue) => (
                     <RightActions
                         dragAnimatedValue={dragAnimatedValue}
-                        onDelete={onDelete}
+                        // as we are now using uuid wont be using drilling index prop anymore
+                        // index={index}
+                        task={task}
+                        // onDelete={onDelete}
                     />
                 )}
             >
-                <Pressable onPress={onItemPressed} style={styles.taskContainer}>
+                <Pressable
+                    // onPress={onCreate}
+                    onPress={onUpdate}
+                    // onPress={onItemPressed} 
+                    style={styles.taskContainer}>
                     <MaterialCommunityIcons
                         name={
                             task.isFinished
@@ -86,6 +112,7 @@ const TaskListItem = ({ task, onItemPressed, onDelete }: TaskListItem) => {
                         ]}
                     >
                         {task.title}
+                        {/* {task.id} */}
                     </Text>
                 </Pressable>
             </Swipeable>

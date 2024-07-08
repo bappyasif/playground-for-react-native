@@ -1,14 +1,22 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useState } from 'react'
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
-import { Task } from './TasksContextProvider'
+import { Task, useTasks } from './TasksContextProvider'
 
 
 
-type NewTaskInput = { onAdd: (data: Task) => void }
+// type NewTaskInput = { onAdd: (data: Task) => void }
 
-const NewTaskInput = ({ onAdd }: { onAdd: (data: Task) => void }) => {
+
+// const NewTaskInput = ({ onAdd }: { onAdd: (data: Task) => void }) => {
+    const NewTaskInput = () => {
     const [newTask, setNewTask] = useState("")
+
+    const {addTask} = useTasks()
+
+    // const onAdd = (newTodo: Task) => addTask(newTodo)
+
+    const onAdd = () => addTask(newTask)
 
     return (
         <View style={styles.taskContainer}>
@@ -22,7 +30,8 @@ const NewTaskInput = ({ onAdd }: { onAdd: (data: Task) => void }) => {
                 value={newTask} onChangeText={setNewTask}
                 onEndEditing={() => {
                     if (newTask) {
-                        onAdd({ title: newTask, isFinished: false })
+                        onAdd()
+                        // onAdd({ title: newTask, isFinished: false })
                         // safety reset
                         newTask && setNewTask("")
                     }

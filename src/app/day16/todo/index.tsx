@@ -14,39 +14,41 @@ const TodoScreen = () => {
 
     const headerHeight = useHeaderHeight()
 
-    const {tasks, setTasks} = useTasks()
+    const {setTasks, deleteTask, getFilteredTasks} = useTasks()
 
-    const filteredTasks = tasks.filter((task) => {
-        if (tab === "Todo" && task.isFinished) {
-            return false
-        }
+    const filteredTasks = getFilteredTasks(tab, searchQuery)
 
-        if (tab === "Done" && !task.isFinished) {
-            return false
-        }
+    // const filteredTasks = tasks.filter((task) => {
+    //     if (tab === "Todo" && task.isFinished) {
+    //         return false
+    //     }
 
-        if (!searchQuery) {
-            return true
-        }
+    //     if (tab === "Done" && !task.isFinished) {
+    //         return false
+    //     }
 
-        return task.title.toLocaleLowerCase().trim().includes(searchQuery.toLocaleLowerCase().trim())
-    })
+    //     if (!searchQuery) {
+    //         return true
+    //     }
 
-    const onItemPressed = (index: number) => {
-        setTasks(curr => {
-            const updatedTasks = [...curr]
-            updatedTasks[index].isFinished = !updatedTasks[index].isFinished
-            return updatedTasks
-        })
-    }
+    //     return task.title.toLocaleLowerCase().trim().includes(searchQuery.toLocaleLowerCase().trim())
+    // })
 
-    const deleteTask = (index: number) => {
-        setTasks(curr => {
-            const updatedTasks = [...curr]
-            updatedTasks.splice(index, 1)
-            return updatedTasks
-        })
-    }
+    // const onItemPressed = (index: number) => {
+    //     setTasks(curr => {
+    //         const updatedTasks = [...curr]
+    //         updatedTasks[index].isFinished = !updatedTasks[index].isFinished
+    //         return updatedTasks
+    //     })
+    // }
+
+    // const deleteTask = (index: number) => {
+    //     setTasks(curr => {
+    //         const updatedTasks = [...curr]
+    //         updatedTasks.splice(index, 1)
+    //         return updatedTasks
+    //     })
+    // }
 
     return (
         <KeyboardAvoidingView
@@ -82,11 +84,18 @@ const TodoScreen = () => {
                     contentContainerStyle={{ gap: 5, padding: 10, marginTop: 10 }}
                     data={filteredTasks}
                     removeClippedSubviews={false}
-                    renderItem={({ item, index }) => <TaskListItem task={item} onItemPressed={() => onItemPressed(index)} onDelete={() => deleteTask(index)} />}
+                    renderItem={({ item }) => <TaskListItem task={item} />}
+                    // as we're no longer using index rather mkaig it fullproof by using uuid for each task
+                    // renderItem={({ item, index }) => <TaskListItem task={item} index={index} />}
+                    // renderItem={({ item, index }) => <TaskListItem task={item} onItemPressed={() => onItemPressed(index)} onDelete={() => deleteTask(index)} />}
                     // to make sure delete action does not stay visible we will specify a distinct key for uniqueness
-                    keyExtractor={(item) => item.title}
+                    // keyExtractor={(item) => item.title}
 
-                    ListFooterComponent={<NewTaskInput onAdd={(newTodo: Task) => setTasks(curr => [...curr, newTodo])} />}
+                    // now that we have id specified in task items we doent have to explicitly define keyextrractor
+
+                    // refactored using context provider
+                    // ListFooterComponent={<NewTaskInput onAdd={(newTodo: Task) => setTasks(curr => [...curr, newTodo])} />}
+                    ListFooterComponent={<NewTaskInput  />}
                 />
 
             </SafeAreaView>
