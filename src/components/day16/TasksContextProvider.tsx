@@ -1,79 +1,83 @@
-import { PropsWithChildren, createContext, useContext, useState } from "react";
+import { PropsWithChildren, createContext, useContext, useEffect, useState } from "react";
 import dummyTasks from "./dummyTasks";
-import {v4} from "uuid"
+import { v4 } from "uuid"
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type Task = { isFinished: boolean, title: string, id: string }
 
 type TasksContext = {
     tasks: Task[];
     setTasks: React.Dispatch<React.SetStateAction<Task[]>>,
-    // onItemPressed: (idx: number) => void,
-    // deleteTask: (idx: number) => void,
     toggleFinished: (idx: string) => void,
     deleteTask: (idx: string) => void,
     getFilteredTasks: (tab: string, searchQuery: string) => Task[],
-    // addTask: (newTodo: Task) => void
-    // addTask: (title: string) => void
-    addTask: (title: string) => Task[] | undefined
+    addTask: (title: string) => Task[] | undefined,
+    numberOfCompletedTasks: number,
+    totalNumberOfTasks: number
 }
 
 const TasksContext = createContext<TasksContext>({
     setTasks: () => { },
     tasks: [],
-    // onItemPressed: (i: number) => { },
-    // deleteTask: (i: number) => { },
     toggleFinished: (i: string) => { },
     deleteTask: (i: string) => { },
     getFilteredTasks: (tab, searchQuery) => [],
-    // addTask(newTodo) {
-
-    // },
-    // addTask(title) {
-
-    // },
     addTask(title) {
         return []
     },
+    numberOfCompletedTasks: 0,
+    totalNumberOfTasks: 0
 });
 
 const TasksContextProvider = ({ children }: PropsWithChildren) => {
+    // so that during data loading our async storage doesnt get overwritten by dummydata triggered saveData call on component mount
+    const [isLoadded, setIsLoaded] = useState(false)
+
     const [tasks, setTasks] = useState<Task[]>(dummyTasks)
 
-    // const onItemPressed = (index: number) => {
-    //     setTasks(curr => {
-    //         const updatedTasks = [...curr]
-    //         updatedTasks[index].isFinished = !updatedTasks[index].isFinished
-    //         return updatedTasks
-    //     })
-    // }
-    
-    // after refactoring with uuid
-    // const onItemPressed = (id: string) => {
-    //     setTasks(curr => {
-    //         let updatedTasks = [...curr]
-    //         updatedTasks = updatedTasks.map(item => {
-    //             if(item.id === id) {
-    //                 item.isFinished = !item.isFinished
-    //             }
+    useEffect(() => {
+        loadData()
+    }, [])
 
-    //             return item
-    //         })
-    //         return updatedTasks
-    //     })
-    // }
+    useEffect(() => {
+        saveData()
+    }, [tasks])
 
-    const onItemPressed = (id: string) => setTasks(curr => curr.map(item => item.id !== id ? item : {...item, isFinished: !item.isFinished}))
+    const saveData = async () => {
+        // preventing to data overwritten when its not ready with async read command yet
 
-    // const deleteTask = (index: number) => {
-    // const deleteTask = (id: string) => {
-    //     setTasks(curr => {
-    //         let updatedTasks = [...curr]
-    //         // as we are not dealing with index anymore, which causes bugs in handling operations correctly on various tabs
-    //         // updatedTasks.splice(id, 1)
-    //         updatedTasks = updatedTasks.filter(item => item.id !== id)
-    //         return updatedTasks
-    //     })
-    // }
+        if(!isLoadded) {
+            return
+        }
+
+        try {
+            const jsonValue = JSON.stringify(tasks);
+            await AsyncStorage.setItem('tasks', jsonValue);
+            // await AsyncStorage.setItem('my-key', "value");
+        } catch (e) {
+            // saving error
+            console.log(e, "error occured while saving data into device storage!!")
+        }
+    }
+
+    const loadData = async () => {
+        try {
+            const jsonValue = await AsyncStorage.getItem('tasks');
+            if (jsonValue) {
+                const loadedTasks = JSON.parse(jsonValue)
+                setTasks(loadedTasks)
+            }
+
+        } catch (e) {
+            // error reading value
+            console.log(e, "error occured while reading data from device storage!!")
+        } finally {
+            // no matter what now we know that we tried read data from device
+            setIsLoaded(true)
+        }
+    }
+
+    const onItemPressed = (id: string) => setTasks(curr => curr.map(item => item.id !== id ? item : { ...item, isFinished: !item.isFinished }))
 
     const deleteTask = (id: string) => setTasks(curr => curr.filter(item => item.id !== id))
 
@@ -95,20 +99,8 @@ const TasksContextProvider = ({ children }: PropsWithChildren) => {
         })
     }
 
-    // const addTask = (newTodo: Task) => setTasks(curr => [...curr, newTodo])
-
-    // const addTask = (title: string) => {
-    //     const newTask = {
-    //         id: "letsee",
-    //         title,
-    //         isFinished: false
-    //     }
-    //     setTasks(curr => [...curr, newTask])
-    // }
-
     const addTask = (title: string) => {
-        const newTask:Task = {
-            // id: "letsee",
+        const newTask: Task = {
             id: v4(),
             title,
             isFinished: false
@@ -118,11 +110,14 @@ const TasksContextProvider = ({ children }: PropsWithChildren) => {
         return tasks
     }
 
+    const totalNumberOfTasks = tasks.length;
+    
+    const numberOfCompletedTasks = tasks.filter(item => item.isFinished).length
+
     return (
-        <TasksContext.Provider 
-            // value={{ tasks, setTasks, deleteTask, onItemPressed, getFilteredTasks, addTask }}
-            value={{ tasks, setTasks, deleteTask, toggleFinished: onItemPressed, getFilteredTasks, addTask }}
-            >
+        <TasksContext.Provider
+            value={{ tasks, setTasks, deleteTask, toggleFinished: onItemPressed, getFilteredTasks, addTask, totalNumberOfTasks, numberOfCompletedTasks }}
+        >
             {children}
         </TasksContext.Provider>
     )
