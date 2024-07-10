@@ -5,6 +5,7 @@ import Swipeable from 'react-native-gesture-handler/Swipeable';
 import Reanimated from 'react-native-reanimated';
 // import { Task, useTasks } from './TasksContextProvider';
 import { type Task, useTasks } from './TasksContextProvider';
+import { customEvent } from 'vexo-analytics';
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
@@ -69,7 +70,23 @@ const TaskListItem = ({ task }: TaskListItem) => {
     // const { onItemPressed, deleteTask } = useTasks()
     // const onCreate = () => onItemPressed(index)
     const { toggleFinished, deleteTask } = useTasks()
-    const onUpdate = () => toggleFinished(task.id)
+    // const onUpdate = () => toggleFinished(task.id)
+
+    const onUpdate = () => {
+        toggleFinished(task.id)
+
+        // customEvent("todo-pressed", {complete: !task.isFinished})
+
+        customEvent("todo-pressed", {
+            // complete: !task.isFinished, 
+            // we can also send in more information and data as we see fit
+            purcahsed: !task.isFinished,
+            total: "123.4",
+            currency: "usd",
+            priducts: ["prod1", "prod2"]
+        })
+    }
+
     // const onUpdate = () => onItemPressed(task.id)
 
     // even more better usecase for context when used it in RightActions directly instead

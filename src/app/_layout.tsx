@@ -15,6 +15,11 @@ import amplifyconfig from '@/amplifyconfiguration.json';
 
 import { Authenticator, Theme, ThemeProvider } from "@aws-amplify/ui-react-native"
 
+import { vexo } from 'vexo-analytics';
+
+// You may want to wrap this with `if (!__DEV__) { ... }` to only run Vexo in production.
+vexo(process.env.EXPO_PUBLIC_VEXO_API_KEY!);
+
 Amplify.configure(amplifyconfig);
 
 const theme: Theme = {
