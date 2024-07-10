@@ -1,4 +1,4 @@
-import { Task } from "./TasksContextProvider";
+import { Task } from "./TasksStore";
 
 const dummyTasks: Task[] = [
     {

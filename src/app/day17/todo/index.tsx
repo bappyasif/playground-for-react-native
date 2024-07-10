@@ -4,7 +4,7 @@ import { Stack } from 'expo-router'
 import NewTaskInput from '@/components/day17/NewTaskInput'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import TaskListItem from '@/components/day17/TaskListItem'
-import { useTasks } from '@/components/day17/TasksContextProvider'
+// import { useTasks } from '@/components/day17/TasksContextProvider'
 import { useTasksStore } from '@/components/day17/TasksStore'
 
 const TodoScreen = () => {

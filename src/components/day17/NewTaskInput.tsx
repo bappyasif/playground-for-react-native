@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useState } from 'react'
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons"
-import { useTasks } from './TasksContextProvider'
+// import { useTasks } from './TasksContextProvider'
 import { useTasksStore } from './TasksStore'
 
 // type NewTaskInput = { onAdd: (data: Task) => void }

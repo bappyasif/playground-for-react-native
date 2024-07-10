@@ -4,9 +4,9 @@ import { MaterialCommunityIcons } from "@expo/vector-icons"
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import Reanimated from 'react-native-reanimated';
 // import { Task, useTasks } from './TasksContextProvider';
-import { type Task, useTasks } from './TasksContextProvider';
+// import { type Task, useTasks } from './TasksContextProvider';
 import { customEvent } from 'vexo-analytics';
-import { useTasksStore } from './TasksStore';
+import { Task, useTasksStore } from './TasksStore';
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
