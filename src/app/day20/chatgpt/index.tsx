@@ -23,10 +23,10 @@ const ChatGPTWrapperScreen = () => {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar style='auto' />
-            <KeyboardAvoidingView
+            {/* <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={{ flex: 1 }}
-            >
+            > */}
                 <FlatList
                     data={messages}
                     contentContainerStyle={{ gap: 10, padding: 10 }}
@@ -38,7 +38,7 @@ const ChatGPTWrapperScreen = () => {
                     <TextInput placeholder='how can i help you?' style={styles.input} value={prompt} onChangeText={setPrompt} />
                     <Button title='Seek' onPress={handleOnPressed} />
                 </View>
-            </KeyboardAvoidingView>
+            {/* </KeyboardAvoidingView> */}
         </SafeAreaView>
     )
 }
