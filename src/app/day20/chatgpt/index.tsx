@@ -1,23 +1,58 @@
 import { Button, FlatList, KeyboardAvoidingView, Platform, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import Message from '@/components/day20/Message'
 
 const ChatGPTWrapperScreen = () => {
     const [messages, setMessages] = useState([
-        { role: "system", content: "you're a helpful assitent" },
+        // { role: "system", content: "you're a helpful assitent" },
+        { role: "system", content: "you're a helpful assitent. you are very sarcastic and passive aggressive" }, // this actually makes openai response custom tailored as such persona!!
         { role: "user", content: "hello there dear user" },
         { role: "assistent", content: "hello, how can i help?" }
     ])
 
     const [prompt, setPrompt] = useState("");
 
-    const handleOnPressed = () => {
+    const listRef = useRef(null)
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            listRef.current?.scrollToEnd({animated: true})
+        }, 101)
+
+        return () => clearTimeout(timer)
+    }, [messages])
+
+    const handleOnPressed = async () => {
         console.log("pressed!!", prompt)
 
-        setMessages(prev => [...prev, { role: "user", content: prompt }])
+        const userMsg = { role: "user", content: prompt }
+
+        // setMessages(prev => [...prev, { role: "user", content: prompt }])
+        setMessages(prev => [...prev, userMsg]) // by sending list of messages it will work as a history for openai to trace back give proper response
 
         setPrompt("")
+
+        // listRef.current?.scrollToEnd({animated: true})
+
+        const result = await fetch("http://localhost:8081/day20/chatgpt/completion", {
+            headers: {
+                "Content-Type": "application/json"
+            },
+            method: "POST",
+            // body: JSON.stringify(messages)
+            body: JSON.stringify([...messages, userMsg])
+        })
+
+        const resultJson = await result.json()
+
+        const answer = resultJson.choices?.[0]?.message
+
+        answer && setMessages(prev => [...prev, answer])
+
+        // listRef.current?.scrollToEnd({animated: true})
+
+        // setPrompt("")
     }
 
     return (
@@ -28,7 +63,9 @@ const ChatGPTWrapperScreen = () => {
                 style={{ flex: 1 }}
             > */}
                 <FlatList
-                    data={messages}
+                    ref={listRef}
+                    // data={messages}
+                    data={messages.filter(item => item.role !== "system")}
                     contentContainerStyle={{ gap: 10, padding: 10 }}
                     renderItem={({ item }) => (
                         <Message message={item} />
