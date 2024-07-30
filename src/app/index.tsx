@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, View } from 'react-native';
 
 export default function HomeScreen() {
 
-    const nums = [...Array(20)].map((v, i) => i + 1)
+    const nums = [...Array(24)].map((v, i) => i + 1)
 
     return (
         <View style={styles.container}>
