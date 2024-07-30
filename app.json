@@ -30,7 +30,12 @@
     },
     "plugins": [
       "expo-font",
-      "expo-router",
+      [
+        "expo-router",
+        {
+          "origin": "http://localhost:8081"
+        }
+      ],
       [
         "expo-local-authentication",
         {
