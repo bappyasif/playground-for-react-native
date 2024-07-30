@@ -3,6 +3,21 @@ import React, { useEffect, useRef, useState } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import Message from '@/components/day23/Message'
 
+const fetchApi = async (endpoint: string, bodyJson) => {
+    const result = await fetch(`http://localhost:8081/day23/chatgpt/${endpoint}`, {
+        headers: {
+            "Content-Type": "application/json"
+        },
+        method: "POST",
+        // body: JSON.stringify(messages)
+        body: JSON.stringify(bodyJson)
+    })
+
+    const resultJson = await result.json()
+
+    return resultJson
+}
+
 const ChatGPTWrapperScreen = () => {
     const [messages, setMessages] = useState([
         // { role: "system", content: "you're a helpful assitent" },
@@ -25,38 +40,6 @@ const ChatGPTWrapperScreen = () => {
         return () => clearTimeout(timer)
     }, [messages])
 
-    // const handleOnPressed = async () => {
-    //     console.log("pressed!!", prompt)
-
-    //     const userMsg = { role: "user", content: prompt }
-
-    //     // setMessages(prev => [...prev, { role: "user", content: prompt }])
-    //     setMessages(prev => [...prev, userMsg]) // by sending list of messages it will work as a history for openai to trace back give proper response
-
-    //     setPrompt("")
-
-    //     // listRef.current?.scrollToEnd({animated: true})
-
-    //     const result = await fetch("http://localhost:8081/day20/chatgpt/completion", {
-    //         headers: {
-    //             "Content-Type": "application/json"
-    //         },
-    //         method: "POST",
-    //         // body: JSON.stringify(messages)
-    //         body: JSON.stringify([...messages, userMsg])
-    //     })
-
-    //     const resultJson = await result.json()
-
-    //     const answer = resultJson.choices?.[0]?.message
-
-    //     answer && setMessages(prev => [...prev, answer])
-
-    //     // listRef.current?.scrollToEnd({animated: true})
-
-    //     // setPrompt("")
-    // }
-
     const handleOnPressed = async () => {
         if (isLoading) {
             return
@@ -73,16 +56,78 @@ const ChatGPTWrapperScreen = () => {
 
         // listRef.current?.scrollToEnd({animated: true})
 
-        const result = await fetch("http://localhost:8081/day20/chatgpt/imagine", {
-            headers: {
-                "Content-Type": "application/json"
-            },
-            method: "POST",
-            // body: JSON.stringify(messages)
-            body: JSON.stringify({ prompt })
-        })
+        try {
+            const shouldGenerateImage = await useImagePrompt(userMsg)
 
-        const resultJson = await result.json()
+            if (shouldGenerateImage) {
+                await generateImage()
+            } else {
+                await generateCompletion(userMsg)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+
+        setIsLoading(false)
+    }
+
+    const generateCompletion = async (userMsg: {
+        role: string;
+        content: string;
+    }) => {
+        // const result = await fetch(`http://localhost:8081/day23/chatgpt/${endpoint}`, {
+        //     headers: {
+        //         "Content-Type": "application/json"
+        //     },
+        //     method: "POST",
+        //     // body: JSON.stringify(messages)
+        //     body: JSON.stringify([...messages, userMsg])
+        // })
+
+        const resultJson = await fetchApi("completion", 
+            [...messages.filter(m => m.role !== "image"), userMsg])
+
+        const answer = resultJson.choices?.[0]?.message
+
+        answer && setMessages(prev => [...prev, answer])
+    }
+
+    const useImagePrompt = async (prompt) => {
+        const resultJson = await fetchApi("completion", [
+            
+            // ...messages, // we dont need entire messages history fior this just only just only a firection toi system to send ys confidence lecvel in 0 to 1
+            {
+                role: "system",
+                content: "you categorize prompts into image generation and completion genration requests. you only response bak with your confidence whether prompt is likely to be for image genartion or not by denoting 0 to 1.0"
+            },
+            {
+                role: "user",
+                content: `tell me if prompt that i sent you is a image generation or chat completion by denoting 1 or 0. Prompt is ${prompt}`
+            }
+        ])
+
+        const answer = resultJson.choices?.[0]?.message;
+
+        if(answer) {
+            return Number(answer.content) > .75
+        }
+
+        return false
+    }
+
+    const generateImage = async () => {
+        // const result = await fetch("http://localhost:8081/day20/chatgpt/imagine", {
+        //     headers: {
+        //         "Content-Type": "application/json"
+        //     },
+        //     method: "POST",
+        //     // body: JSON.stringify(messages)
+        //     body: JSON.stringify({ prompt })
+        // })
+
+        // const resultJson = await result.json()
+
+        const resultJson = await fetchApi("imagine", { prompt })
 
         const answer = resultJson?.data?.[0]?.url
 
@@ -96,8 +141,6 @@ const ChatGPTWrapperScreen = () => {
         }
 
         console.log(resultJson, "resultJson!!")
-
-        setIsLoading(false)
     }
 
     return (
